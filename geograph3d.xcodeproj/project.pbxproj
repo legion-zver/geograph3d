@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		11740BF81DA3AA8B00CBD1A8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 11740BF71DA3AA8B00CBD1A8 /* main.cpp */; };
+		117AEC161DA3AB0C001F78BF /* dijkstra.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC061DA3AB0C001F78BF /* dijkstra.cpp */; };
+		117AEC171DA3AB0C001F78BF /* edge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC081DA3AB0C001F78BF /* edge.cpp */; };
+		117AEC181DA3AB0C001F78BF /* graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC0A1DA3AB0C001F78BF /* graph.cpp */; };
+		117AEC191DA3AB0C001F78BF /* jute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC0C1DA3AB0C001F78BF /* jute.cpp */; };
+		117AEC1A1DA3AB0C001F78BF /* node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC0E1DA3AB0C001F78BF /* node.cpp */; };
+		117AEC1B1DA3AB0C001F78BF /* roads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC101DA3AB0C001F78BF /* roads.cpp */; };
+		117AEC1C1DA3AB0C001F78BF /* search.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC121DA3AB0C001F78BF /* search.cpp */; };
+		117AEC1D1DA3AB0C001F78BF /* test_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 117AEC141DA3AB0C001F78BF /* test_data.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +33,22 @@
 /* Begin PBXFileReference section */
 		11740BF41DA3AA8B00CBD1A8 /* geograph3d */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = geograph3d; sourceTree = BUILT_PRODUCTS_DIR; };
 		11740BF71DA3AA8B00CBD1A8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		117AEC061DA3AB0C001F78BF /* dijkstra.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dijkstra.cpp; sourceTree = "<group>"; };
+		117AEC071DA3AB0C001F78BF /* dijkstra.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dijkstra.hpp; sourceTree = "<group>"; };
+		117AEC081DA3AB0C001F78BF /* edge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = edge.cpp; sourceTree = "<group>"; };
+		117AEC091DA3AB0C001F78BF /* edge.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = edge.hpp; sourceTree = "<group>"; };
+		117AEC0A1DA3AB0C001F78BF /* graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graph.cpp; sourceTree = "<group>"; };
+		117AEC0B1DA3AB0C001F78BF /* graph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = graph.hpp; sourceTree = "<group>"; };
+		117AEC0C1DA3AB0C001F78BF /* jute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jute.cpp; sourceTree = "<group>"; };
+		117AEC0D1DA3AB0C001F78BF /* jute.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = jute.hpp; sourceTree = "<group>"; };
+		117AEC0E1DA3AB0C001F78BF /* node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = node.cpp; sourceTree = "<group>"; };
+		117AEC0F1DA3AB0C001F78BF /* node.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = node.hpp; sourceTree = "<group>"; };
+		117AEC101DA3AB0C001F78BF /* roads.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = roads.cpp; sourceTree = "<group>"; };
+		117AEC111DA3AB0C001F78BF /* roads.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = roads.hpp; sourceTree = "<group>"; };
+		117AEC121DA3AB0C001F78BF /* search.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = search.cpp; sourceTree = "<group>"; };
+		117AEC131DA3AB0C001F78BF /* search.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = search.hpp; sourceTree = "<group>"; };
+		117AEC141DA3AB0C001F78BF /* test_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_data.cpp; sourceTree = "<group>"; };
+		117AEC151DA3AB0C001F78BF /* test_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_data.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +81,22 @@
 		11740BF61DA3AA8B00CBD1A8 /* geograph3d */ = {
 			isa = PBXGroup;
 			children = (
+				117AEC061DA3AB0C001F78BF /* dijkstra.cpp */,
+				117AEC071DA3AB0C001F78BF /* dijkstra.hpp */,
+				117AEC081DA3AB0C001F78BF /* edge.cpp */,
+				117AEC091DA3AB0C001F78BF /* edge.hpp */,
+				117AEC0A1DA3AB0C001F78BF /* graph.cpp */,
+				117AEC0B1DA3AB0C001F78BF /* graph.hpp */,
+				117AEC0C1DA3AB0C001F78BF /* jute.cpp */,
+				117AEC0D1DA3AB0C001F78BF /* jute.hpp */,
+				117AEC0E1DA3AB0C001F78BF /* node.cpp */,
+				117AEC0F1DA3AB0C001F78BF /* node.hpp */,
+				117AEC101DA3AB0C001F78BF /* roads.cpp */,
+				117AEC111DA3AB0C001F78BF /* roads.hpp */,
+				117AEC121DA3AB0C001F78BF /* search.cpp */,
+				117AEC131DA3AB0C001F78BF /* search.hpp */,
+				117AEC141DA3AB0C001F78BF /* test_data.cpp */,
+				117AEC151DA3AB0C001F78BF /* test_data.hpp */,
 				11740BF71DA3AA8B00CBD1A8 /* main.cpp */,
 			);
 			path = geograph3d;
@@ -120,7 +160,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				117AEC181DA3AB0C001F78BF /* graph.cpp in Sources */,
+				117AEC1C1DA3AB0C001F78BF /* search.cpp in Sources */,
 				11740BF81DA3AA8B00CBD1A8 /* main.cpp in Sources */,
+				117AEC161DA3AB0C001F78BF /* dijkstra.cpp in Sources */,
+				117AEC1D1DA3AB0C001F78BF /* test_data.cpp in Sources */,
+				117AEC1B1DA3AB0C001F78BF /* roads.cpp in Sources */,
+				117AEC191DA3AB0C001F78BF /* jute.cpp in Sources */,
+				117AEC171DA3AB0C001F78BF /* edge.cpp in Sources */,
+				117AEC1A1DA3AB0C001F78BF /* node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +297,7 @@
 				11740BFD1DA3AA8B00CBD1A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
