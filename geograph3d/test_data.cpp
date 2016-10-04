@@ -15,17 +15,20 @@ void FillGraphExample01(Graph* graph) {
         unsigned int currentNodeId = 0;
         
         // Перебор этажей, в данном примере у нас их 3 (так как в либе json нет метода получения ключей)))
-        for(int floor = 0; floor < 3; floor++) {
+        for(int floor = 0; floor < root.size(); floor++) {
             auto objRoads = root[std::to_string(floor)];
             // Перебор дорог
             for(int i=0; i<objRoads.size(); i++) {
                 auto objNodes = objRoads[i];
                 std::vector<Node*> road;
                 for(int j=0; j<objRoads.size(); j++) {
-                    auto objNode = objRoads[j];
-                    double lat = objNode["lat"].as_double();
-                    double lng = objNode["lng"].as_double();
-                    road.push_back(new Node(currentNodeId++, lat, lng, (double)floor*0.03f));
+                    auto objNodes = objRoads[j];
+                    for(int z=0; z<objNodes.size(); z++) {
+                        auto objNode = objNodes[z];
+                        double lat = objNode["lat"].as_double();
+                        double lng = objNode["lng"].as_double();
+                        road.push_back(new Node(currentNodeId++, lat, lng, (double)floor*0.03f));                        
+                    }
                 }
                 roads.AddRoad(road);
             }
@@ -48,7 +51,7 @@ void AddTransitionsExample01(Graph* graph) {
         
         std::vector<TransitionInfo> forNextEdges;
         
-        unsigned int layerId = 10000;
+        unsigned int layerId = graph->GetMaxNodeID()+1;
         for(int i=0; i<root.size(); i++) {
             auto transition = root[i];
             auto transitionId = transition["transitionId"].as_int();
