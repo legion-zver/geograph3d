@@ -80,6 +80,9 @@ double Node::DistanceTo(double _latitude, double _longitude, double _level) {
     return sqrt(pow(d, 2) + pow(fabs(this->level - _level), 2));
 }
 
+bool Node::CompareLocation(double _latitude, double _longitude) {
+    return this->longitude == _longitude && this->latitude == _latitude;
+}
 
 Point Node::FindCrossTwoLines2D(Node* p0, Node* p1, Node* r0, Node* r1, bool duo) {
     Point result; result.empty = true;
@@ -90,16 +93,21 @@ Point Node::FindCrossTwoLines2D(Node* p0, Node* p1, Node* r0, Node* r1, bool duo
         double w2 = r1->GetLongitude() - r0->GetLongitude();
         double k = (z1*(r0->GetLongitude()-p0->GetLongitude())+w1*(p0->GetLatitude()-r0->GetLatitude()))/((w1*z2)-(z1*w2));
         double latitude = r0->GetLatitude()+(z2*k);
-        double longitude = r0->GetLongitude()+(w2*k);        
-        if(Node::CheckPointInLine2D(latitude, longitude, p0, p1)) {
-            if(!duo) {
-                result.latitude = latitude;
-                result.longitude = longitude;
-                result.empty = false;
-            } else if(Node::CheckPointInLine2D(latitude, longitude, r0, r1)) {
-                result.latitude = latitude;
-                result.longitude = longitude;
-                result.empty = false;
+        double longitude = r0->GetLongitude()+(w2*k);
+        if(!p0->CompareLocation(latitude, longitude) &&
+           !p1->CompareLocation(latitude, longitude) &&
+           !r0->CompareLocation(latitude, longitude) &&
+           !r1->CompareLocation(latitude, longitude)) {
+            if(Node::CheckPointInLine2D(latitude, longitude, p0, p1)) {
+                if(!duo) {
+                    result.latitude = latitude;
+                    result.longitude = longitude;
+                    result.empty = false;
+                } else if(Node::CheckPointInLine2D(latitude, longitude, r0, r1)) {
+                    result.latitude = latitude;
+                    result.longitude = longitude;
+                    result.empty = false;
+                }
             }
         }
     }

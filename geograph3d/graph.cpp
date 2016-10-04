@@ -52,7 +52,7 @@ Node* Graph::GetNodeByIndex(unsigned int index) {
 }
 
 Node* Graph::GetNode(double latitude, double longitude, double level) {
-    return this->GetNearestNode(latitude, longitude, level, 0.0);
+    return this->GetNearestNode(latitude, longitude, level, -1.0);
 }
 
 Node* Graph::GetNearestNode(double latitude, double longitude, double level, double minRadius) {
@@ -62,7 +62,7 @@ Node* Graph::GetNearestNode(double latitude, double longitude, double level, dou
         if(itN->second != NULL) {
             // Поиск только на одном уровне
             if(itN->second->GetLevel() == level) {
-                if(minRadius > 0.0) {
+                if(minRadius >= 0.0) {
                     double w = itN->second->DistanceTo(latitude, longitude, longitude);
                     if (w >= minRadius) {
                         if(w < minWeight) {
@@ -124,54 +124,69 @@ unsigned long Graph::GetCountNodes() {
     return this->nodes.size();
 }
 
-Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool onlyForward) {
-    bool backward = false;
-    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v1 = this->edgesForward.find(sourceId);
-    if(v1 == this->edgesForward.end()) {
-        if(onlyForward) {
-            return NULL;
-        }
-        v1 = this->edgesBackward.find(sourceId);
-        if(v1 == this->edgesBackward.end()) {
-            return NULL;
-        }
-        backward = true;
+Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool* inOutDirection) {
+    bool direction = true;
+    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges0 = &this->edges;
+    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges1 = &this->edgesFeedbacks;
+    if(inOutDirection != NULL) {
+        direction = *inOutDirection;
+    }
+    if(!direction) {
+        edges0 = edges1;
+        edges1 = &this->edges;
+    }
+    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v1 = edges0->find(sourceId);
+    if(v1 == edges0->end()) {
+        v1 = edges0->find(targetId);
+        if(v1 == edges0->end()) {
+            v1 = edges1->find(sourceId);
+            if(v1 == edges1->end()) {
+                v1 = edges1->find(targetId);
+                if(v1 == edges1->end()) {
+                    return NULL;
+                }
+            }
+            direction = !direction;
+        }        
+    }
+    if(inOutDirection != NULL) {
+        *inOutDirection = direction;
     }
     std::map<unsigned int, Edge*>::iterator v2 = v1->second.find(targetId);
     if(v2 == v1->second.end()) {
-        if(backward || onlyForward) {
-            return NULL;
-        }
-        v1 = this->edgesBackward.find(sourceId);
-        if(v1 == this->edgesBackward.end()) {
-            return NULL;
-        }
-        v2 = v1->second.find(targetId);
-        if(v2 == v1->second.end()) {
-            return NULL;
-        }
+        return NULL;
     }
     return v2->second;
 }
 
-std::map<unsigned int, Edge*>* Graph::GetEdges(unsigned int sourceId, bool forward) {
-    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v;
-    if(forward) {
-        v = this->edgesForward.find(sourceId);
-        if(v == this->edgesForward.end()) {
+std::map<unsigned int, Edge*>* Graph::GetEdges(unsigned int sourceId, bool* inOutDirection) {
+    bool direction = true;
+    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges0 = &this->edges;
+    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges1 = &this->edgesFeedbacks;
+    if(inOutDirection != NULL) {
+        direction = *inOutDirection;
+    }
+    if(!direction) {
+        edges0 = edges1;
+        edges1 = &this->edges;
+    }
+    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v;    
+    v = edges0->find(sourceId);
+    if(v == edges0->end()) {
+        v = edges1->find(sourceId);
+        if(v == edges1->end()) {
             return NULL;
         }
-    } else {
-        v = this->edgesBackward.find(sourceId);
-        if(v == this->edgesBackward.end()) {
-            return NULL;
-        }
+        direction = !direction;
+    }
+    if(inOutDirection != NULL) {
+        *inOutDirection = direction;
     }
     return &v->second;
 }
 
-double Graph::GetWeight(unsigned int sourceId, unsigned int targetId, int factorId) {
-    Edge *edge = this->GetEdge(sourceId, targetId);
+double Graph::GetWeight(unsigned int sourceId, unsigned int targetId, int factorId, bool* inOutDirection) {
+    Edge *edge = this->GetEdge(sourceId, targetId, inOutDirection);
     if(edge != NULL) {
         return edge->GetWeight(factorId);
     }
@@ -180,7 +195,7 @@ double Graph::GetWeight(unsigned int sourceId, unsigned int targetId, int factor
 
 unsigned long Graph::GetCountEdges() {
     unsigned long count = 0;
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it = this->edgesForward.begin(); it != this->edgesForward.end(); it++) {
+    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it = this->edges.begin(); it != this->edges.end(); it++) {
         count += it->second.size();
     }
     return count;
@@ -228,29 +243,30 @@ bool Graph::RemoveNode(unsigned int id) {
     return true;
 }
 
-Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId, bool biDistance) {
+Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId, bool biDirection, bool baseDirection) {
     Node* source = GetNode(sourceId);
     Node* target = GetNode(targetId);
     if(source != NULL && source != target) {
-        Edge *edge = this->GetEdge(sourceId, targetId, !biDistance);
+        Edge *edge = this->GetEdge(sourceId, targetId);
         if(edge == NULL) {
-            edge = new Edge(source, target, biDistance);
-            std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it = this->edgesForward.find(sourceId);
-            if(it == this->edgesForward.end()) {
-                // Создаем
-                std::map<unsigned int, Edge*> m;
-                m[targetId] = edge;
-                this->edgesForward[sourceId] = m;
-            } else {
-                it->second[targetId] = edge;
+            edge = new Edge(source, target, biDirection);
+            std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it;
+            if(baseDirection || biDirection){
+                it = this->edges.find(sourceId);
+                if(it == this->edges.end()) {                    
+                    std::map<unsigned int, Edge*> m;
+                    m[targetId] = edge;
+                    this->edges[sourceId] = m;
+                } else {
+                    it->second[targetId] = edge;
+                }
             }
-            if(biDistance) {
-                it = this->edgesBackward.find(targetId);
-                if(it == this->edgesBackward.end()) {
-                    // Создаем
+            if(biDirection || !baseDirection) {
+                it = this->edgesFeedbacks.find(targetId);
+                if(it == this->edgesFeedbacks.end()) {
                     std::map<unsigned int, Edge*> m;
                     m[sourceId] = edge;
-                    this->edgesBackward[targetId] = m;
+                    this->edgesFeedbacks[targetId] = m;
                 } else {
                     it->second[sourceId] = edge;
                 }
@@ -264,7 +280,7 @@ Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId, bool biDistan
 bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {
     unsigned long countRemove = 0;
     //Проходимся по граням и удаляем все что связано с текущей нодой
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edgesForward.begin(); itE != this->edgesForward.end(); itE++) {
+    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edges.begin(); itE != this->edges.end(); itE++) {
         bool remove = false;
         if(itE->first == nodeId) {
             remove = true;
@@ -289,10 +305,11 @@ bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {
             }
         }
         if(remove) {
-            this->edgesForward.erase(itE);
+            this->edges.erase(itE);
         }
     }
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edgesBackward.begin(); itE != this->edgesBackward.end(); itE++) {
+    //Проходимся по обратным граням и удаляем все что связано с текущей нодой
+    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edgesFeedbacks.begin(); itE != this->edgesFeedbacks.end(); itE++) {
         bool remove = false;
         if(itE->first == nodeId) {
             remove = true;
@@ -317,7 +334,7 @@ bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {
             }
         }
         if(remove) {
-            this->edgesBackward.erase(itE);
+            this->edgesFeedbacks.erase(itE);
         }
     }
     if(countRemove > 0) {
@@ -328,7 +345,7 @@ bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {
 
 //MARK: Clear
 void Graph::Clear() {
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edgesForward.begin(); itE != this->edgesForward.end(); itE++) {
+    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edges.begin(); itE != this->edges.end(); itE++) {
         for(std::map<unsigned int, Edge*>::iterator itES = itE->second.begin(); itES != itE->second.end(); itES++) {
             Edge* edge = itES->second;
             if(edge != NULL) {
@@ -337,8 +354,9 @@ void Graph::Clear() {
         }
         itE->second.clear();
     }
-    this->edgesForward.clear();
-    this->edgesBackward.clear();
+    this->edges.clear();
+    this->edgesFeedbacks.clear();
+    
     for(std::map<unsigned int, Node*>::iterator itN = this->nodes.begin(); itN != this->nodes.end(); itN++) {
         Node* node = itN->second;
         if(node != NULL) {

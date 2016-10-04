@@ -41,7 +41,8 @@ namespace GeoGraph3D {
         std::string     GetTag();
         double          GetLatitude();
         double          GetLongitude();
-        double          GetLevel();
+        double          GetLevel();        
+        bool            CompareLocation(double _latitude, double _longitude);
         
         //MARK: Math
         

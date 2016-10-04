@@ -16,22 +16,21 @@ void FillGraphExample01(Graph* graph) {
         
         // Перебор этажей, в данном примере у нас их 3 (так как в либе json нет метода получения ключей)))
         for(int floor = 0; floor < root.size(); floor++) {
-            auto objRoads = root[std::to_string(floor)];
-            // Перебор дорог
-            for(int i=0; i<objRoads.size(); i++) {
-                auto objNodes = objRoads[i];
-                std::vector<Node*> road;
-                for(int j=0; j<objRoads.size(); j++) {
-                    auto objNodes = objRoads[j];
-                    for(int z=0; z<objNodes.size(); z++) {
-                        auto objNode = objNodes[z];
+            //if (floor == 2) {
+                auto objRoads = root[std::to_string(floor)];
+                // Перебор дорог
+                for(int i=0; i<objRoads.size(); i++) {
+                    auto objNodes = objRoads[i];
+                    std::vector<Node*> road;
+                    for(int j=0; j<objNodes.size(); j++) {
+                        auto objNode = objNodes[j];                    
                         double lat = objNode["lat"].as_double();
                         double lng = objNode["lng"].as_double();
-                        road.push_back(new Node(currentNodeId++, lat, lng, (double)floor*0.03f));                        
+                        road.push_back(new Node(currentNodeId++, lat, lng, (double)floor));
                     }
+                    roads.AddRoad(road);
                 }
-                roads.AddRoad(road);
-            }
+            //}
         }
         roads.FillGraph(graph);            
     }
@@ -62,10 +61,10 @@ void AddTransitionsExample01(Graph* graph) {
                 double lat = location["lat"].as_double();
                 double lng = location["lng"].as_double();
                 // Поиск точек рядом на этаже
-                Node* nereast = graph->GetNearestNode(lat, lng, (double)floor*0.03f, 0.0f);
+                Node* nereast = graph->GetNearestNode(lat, lng, (double)floor, 0.0);
                 if(nereast != NULL) {
                     // Присоединяем переход к ближайшей ноде
-                    graph->AddNode((unsigned int)(layerId+transitionId), name, lat, lng, (double)floor*0.03f);
+                    graph->AddNode((unsigned int)(layerId+transitionId), name, lat, lng, (double)floor);
                     graph->AddEdge(nereast->GetID(), (unsigned int)(layerId+transitionId));
                     
                     // Добавляем в очередь переходы между этажами
@@ -75,6 +74,7 @@ void AddTransitionsExample01(Graph* graph) {
                         TransitionInfo info;
                         info.FromID = (unsigned int)transitionFrom;
                         info.ToID = (unsigned int)transitionTo;
+                        forNextEdges.push_back(info);
                     }
                 }
             }

@@ -14,6 +14,7 @@ DijkstraSearch::DijkstraSearch(Graph* _graph) {
     this->graph = _graph;
 }
 
+
 ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId, int factorId) {
     ResultPath result;
     result.haveErrors = true;
@@ -37,14 +38,14 @@ ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId
                 }
             }
             minHeap.Sort();
-            
+            bool direction = true;
             std::map<unsigned int, Node*> prev;
             while(minHeap.values.size() != 0) {
                 NodeDistance u = minHeap.Pop();
                 if(u.id == targetId) {
                     break;
                 }
-                std::map<unsigned int, Edge*>* cmap = this->graph->GetEdges(u.id);
+                std::map<unsigned int, Edge*>* cmap = this->graph->GetEdges(u.id, &direction);
                 if(cmap != NULL) {
                     for(std::map<unsigned int, Edge*>::const_iterator itE = cmap->begin(); itE != cmap->end(); itE++) {
                         if(itE->second != NULL) {
@@ -53,17 +54,25 @@ ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId
                                 break;
                             }
                             double alt = distance[u.id] + weight;
-                            if(distance[itE->first] > alt) {
-                                distance[itE->first] = alt;
-                                prev[itE->first] = itE->second->GetSource();
-                                minHeap.UpdateDistance(itE->first, alt);
+                            unsigned int tid = itE->first;
+                            if(distance[tid] > alt) {
+                                distance[tid] = alt;
+                                if(direction) {
+                                    if(tid != itE->second->GetSource()->GetID()) {
+                                        prev[tid] = itE->second->GetSource();
+                                    }
+                                } else {
+                                    if(tid != itE->second->GetTarget()->GetID()) {
+                                        prev[tid] = itE->second->GetTarget();
+                                    }
+                                }
+                                minHeap.UpdateDistance(tid, alt);
                             }
                         }
                     }
                     minHeap.Sort();
                 }
             }
-            
             double uId = targetId;
             result.distance = 0.0;
             Node* lastNode = this->graph->GetNode(uId);
@@ -76,7 +85,10 @@ ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId
                     break;
                 }
                 if(lastNode != NULL) {
-                    result.distance += this->graph->GetWeight(itP->second->GetID(), lastNode->GetID(), factorId);
+                    double distance = this->graph->GetWeight(itP->second->GetID(), lastNode->GetID(), factorId);
+                    if(distance > 0) {
+                        result.distance += distance;
+                    }
                 }
                 result.nodes.insert(result.nodes.begin(), itP->second);
                 uId = itP->second->GetID();

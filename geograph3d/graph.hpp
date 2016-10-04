@@ -21,15 +21,15 @@ namespace GeoGraph3D {
         Node* GetNode(double latitude, double longitude, double level);     // Получить ноду по GEO позиции
         Node* GetNode(unsigned int id);                                     // Получить ноду по ID
         Node* GetNode(std::string tag);                                     // Получить ноду по тегу
-        Node* GetNearestNode(double latitude, double longitude, double level, double minRadius);
+        Node* GetNearestNode(double latitude, double longitude, double level, double minRadius = 0.0);
         Node* GetNearestNode(unsigned int id, double minRadius = 0.0);      // Получить ближайщую ноду для ноды с ID (с учетом минимального радиуса поиска)
         Node* GetNodeByIndex(unsigned int index);
         const std::map<unsigned int, Node*>* GetNodes();
         
         unsigned long GetCountNodes();
-        Edge* GetEdge(unsigned int sourceId, unsigned int targetId, bool onlyForward = false);
-        std::map<unsigned int, Edge*>* GetEdges(unsigned int sourceId, bool forward = true);
-        double GetWeight(unsigned int sourceId, unsigned int targetId, int factorId = -1);
+        Edge* GetEdge(unsigned int sourceId, unsigned int targetId, bool* inOutDirection = NULL);
+        std::map<unsigned int, Edge*>* GetEdges(unsigned int sourceId, bool* inOutDirection = NULL);
+        double GetWeight(unsigned int sourceId, unsigned int targetId, int factorId = -1, bool* inOutDirection = NULL);
         unsigned long GetCountEdges();
         
         //MARK: Sets
@@ -47,7 +47,7 @@ namespace GeoGraph3D {
          - findCrossings - поиск пересечений при добавлении (по умолчанию: false)
          */
         
-        Edge* AddEdge(unsigned int sourceId, unsigned int targetId, bool biDistance = true);
+        Edge* AddEdge(unsigned int sourceId, unsigned int targetId, bool biDirection = true, bool baseDirection = true);
         
         bool  RemoveEdgesContainNode(unsigned int nodeId);
         
@@ -55,9 +55,9 @@ namespace GeoGraph3D {
         void Clear();
         
     private:
-        std::map<unsigned int, Node*> nodes;                                 // ноды графа
-        std::map<unsigned int, std::map<unsigned int, Edge*>> edgesForward;  // ребра между нодами в прямом направлении
-        std::map<unsigned int, std::map<unsigned int, Edge*>> edgesBackward; // ребра между нодами в обратном направлении
+        std::map<unsigned int, Node*> nodes;                                  // ноды графа
+        std::map<unsigned int, std::map<unsigned int, Edge*>> edges;          // ребра между нодами
+        std::map<unsigned int, std::map<unsigned int, Edge*>> edgesFeedbacks; // ребра между нодами - обратные связи
     };
 };
 

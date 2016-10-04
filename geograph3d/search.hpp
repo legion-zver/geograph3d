@@ -32,7 +32,7 @@ namespace GeoGraph3D {
     struct ResultPath {
         std::vector<Node*> nodes;
         double             distance;
-        bool               haveErrors;
+        bool               haveErrors;        
     };
 }
 

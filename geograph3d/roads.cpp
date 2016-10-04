@@ -10,6 +10,9 @@
 
 using namespace GeoGraph3D;
 
+//#define DEBUG_CROSS
+//#define DEBUG_ROADS
+
 bool Roads::AddRoad(std::vector<Node*> road) {
     if(road.size() > 1) {
         this->roads.push_back(road);
@@ -21,7 +24,27 @@ bool Roads::AddRoad(std::vector<Node*> road) {
 bool Roads::FillGraph(Graph *graph) {
     if(graph != NULL) {
         graph->Clear();
-        this->FindCrossess();        
+        
+        this->FindCrossess();
+        
+#ifdef DEBUG_ROADS
+        for(unsigned long i = 0; i < this->roads.size(); i++) {
+            Node* p0 = NULL; Node* p1 = NULL;
+            printf("{\"type\":\"Feature\",\"properties\":{\"id\":%lu},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[", i);
+            for(unsigned long ip = 0; ip < this->roads[i].size(); ip++) {
+                if(p0 != NULL) {
+                    p1 = this->roads[i][ip];
+                    printf(",[%f, %f]", p1->GetLongitude(), p1->GetLatitude());
+                    p0 = p1;
+                } else {
+                    p0 = this->roads[i][ip];
+                    printf("[%f, %f]", p0->GetLongitude(), p0->GetLatitude());
+                }
+            }
+            printf("]}},\n");
+        }
+#endif
+        
         unsigned long countRoads = this->roads.size();
         for(unsigned long i = 0; i < countRoads; i++) {
             Node* p0 = NULL; Node* p1 = NULL;
@@ -111,30 +134,32 @@ void Roads::FindCrossess() {
     // Перебор всех отрезков и поиск пересечений
     unsigned long countRoads = this->roads.size();
     for(unsigned long i = 0; i < countRoads; i++) {
-        unsigned long countPoints = this->roads[i].size();
         Node* p0 = NULL; Node* p1 = NULL; Node* r0 = NULL; Node* r1 = NULL;
-        for(unsigned long ip = 0; ip < countPoints; ip++) {
+        for(unsigned long ip = 0; ip < this->roads[i].size(); ip++) {
             if(p0 != NULL) {
                 p1 = this->roads[i][ip];
                 // Перебор дорог и сравнение
                 for(unsigned long j = 0; j < countRoads; j++) {
                     if(i != j) {
-                        unsigned long countRayPoints = this->roads[j].size();
-                        for(unsigned long ir = 0; ir < countRayPoints; ir++) {
+                        for(unsigned long ir = 0; ir < this->roads[j].size(); ir++) {
                             if(r0 != NULL) {
                                 r1 = this->roads[j][ir];
-                                
                                 // Поиск точки пересечения
                                 Point cross = Node::FindCrossTwoLines2D(p0, p1, r0, r1);
                                 if(!cross.empty) {
                                     // Проверяем схожесть этажа
-                                    if((p0->GetLevel() == r0->GetLevel() && p1->GetLevel() == r1->GetLevel()) ||
-                                       (p1->GetLevel() == r0->GetLevel() && p0->GetLevel() == r1->GetLevel())) {
+                                    if((p0->GetLevel() == r0->GetLevel() && p1->GetLevel() == r1->GetLevel())) {
                                         
-                                        double level = (p0->GetLevel() + p1->GetLevel() + r0->GetLevel() + r1->GetLevel())/4;
+                                        double level = p0->GetLevel();
+                                        
                                         // Если пересечение найдено, тогда формируем точку пересечения и меняем дороги
                                         Node *newNode = new Node(crossId, cross.latitude, cross.longitude, level);
                                         if(newNode != NULL) {
+                                            
+#ifdef DEBUG_CROSS
+                                            printf("{\"type\":\"Feature\",\"properties\":{\"marker-color\":\"#AA00BB\",\"marker-size\":\"small\",\"id\":%d, \"t-t\":\"%lu - %lu\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[%f,%f]}},\n", crossId, i, j, cross.longitude, cross.latitude);
+#endif
+                                            
                                             std::vector<unsigned int> crossList;
                                             crossList.push_back(p0->GetID());
                                             crossList.push_back(r0->GetID());
@@ -143,8 +168,9 @@ void Roads::FindCrossess() {
                                             this->crossess[(unsigned int)crossId] = crossList;
                                             this->roads[i].insert(this->roads[i].begin()+ip, newNode);
                                             this->roads[j].insert(this->roads[j].begin()+ir, newNode);
-                                            ir++; ip++;
                                             crossId++;
+                                            p1 = newNode;
+                                            ir++;
                                         }
                                     }
                                 }
@@ -153,6 +179,7 @@ void Roads::FindCrossess() {
                                 r0 = this->roads[j][ir];
                             }
                         }
+                        r0 = NULL; r1 = NULL;
                     }
                 }
                 p0 = p1;

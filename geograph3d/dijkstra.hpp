@@ -20,6 +20,9 @@ namespace GeoGraph3D {
         ResultPath FindPath(unsigned int fromId, unsigned int toId, int factorId = -1);
         
     private:
+        ResultPath Search(unsigned int sourceId, unsigned int targetId, int factorId, bool forward);
+        
+    private:
         Graph* graph;
     };
 }
