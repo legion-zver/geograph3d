@@ -10,7 +10,6 @@
 #include "dijkstra.hpp"
 #include "test_data.hpp"
 
-
 using namespace GeoGraph3D;
 
 int main(int argc, const char * argv[]) {
@@ -26,7 +25,7 @@ int main(int argc, const char * argv[]) {
     unsigned int myLocationId = graph.GetMaxNodeID()+1;
     
     // Берем наше положение и добавляем на него ноду
-    graph.AddNode(myLocationId, "MyGeoPosition", 55.7768890548470, 37.6546230912201, 1); // Первый этаж
+    graph.AddNode(myLocationId, "MyGeoPosition", 55.77682041713589, 37.654655277729034, 2); // Первый этаж
     
     // Проводим поиск ближайшей ноды для нашей гео позиции - для создания ребра
     Node* n = graph.GetNearestNode(myLocationId);
@@ -34,7 +33,7 @@ int main(int argc, const char * argv[]) {
         // Добавляем ребро
         graph.AddEdge(myLocationId, n->GetID());
         
-        Node* to = graph.GetNearestNode(55.77682795974743, 37.65464723110199, 1, 0); // Второй этаж;
+        Node* to = graph.GetNearestNode(55.77625170002003, 37.65544384717941, 2); // Второй этаж;
         if(to != NULL) {
             // Проводим поиск
             DijkstraSearch alg(&graph);
@@ -57,7 +56,7 @@ int main(int argc, const char * argv[]) {
                     }                    
                 }
             }
-            printf("]}}\n");            
+            printf("]}}\n");
             //printf("\nDistance: %f km.\n", result.distance);
         }
     }
