@@ -55,8 +55,9 @@ int main(int argc, const char * argv[]) {
     // Проводим поиск ближайшей ноды для нашей гео позиции - для создания ребра
     Node* n = graph.GetNearestNode(myLocationId);
     if(n != NULL) {
-        // Добавляем ребро
+        // Добавляем два ребра  
         graph.AddEdge(myLocationId, n->GetID());
+        graph.AddEdge(n->GetID(), myLocationId);
         
         Node* to = graph.GetNearestNode(55.77661782674582, 37.65478943008929, 1); // Второй этаж;
         if(to != NULL) {
