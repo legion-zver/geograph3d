@@ -10,7 +10,7 @@
 
 using namespace GeoGraph3D;
 
-//#define DEBUG_CROSS
+#define DEBUG_CROSS
 #define DEBUG_ROADS
 
 bool Roads::AddRoad(std::vector<Node*> nodes, Direction direction) {
@@ -181,7 +181,7 @@ void Roads::FindCrossess() {
                                             this->roads[j].nodes.insert(this->roads[j].nodes.begin()+ir, newNode);
                                             crossId++;
                                             p1 = newNode;
-                                            //ir++;
+                                            ir++;
                                         }
                                     }
                                 }

@@ -58,7 +58,7 @@ int main(int argc, const char * argv[]) {
         // Добавляем ребро
         graph.AddEdge(myLocationId, n->GetID());
         
-        Node* to = graph.GetNearestNode(55.7769984223793, 37.65439449576661, 1); // Второй этаж;
+        Node* to = graph.GetNearestNode(55.7769984223793, 37.65439449576661, 2); // Второй этаж;
         if(to != NULL) {
             // Проводим поиск
             DijkstraSearch alg(&graph);

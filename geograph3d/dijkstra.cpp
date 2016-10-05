@@ -14,7 +14,6 @@ DijkstraSearch::DijkstraSearch(Graph* _graph) {
     this->graph = _graph;
 }
 
-
 ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId, int factorId, double levelSize) {
     ResultPath result;
     result.haveErrors = true;
