@@ -124,33 +124,22 @@ unsigned long Graph::GetCountNodes() {
     return this->nodes.size();
 }
 
-Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool* inOutDirection) {
-    bool direction = true;
-    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges0 = &this->edges;
-    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges1 = &this->edgesFeedbacks;
-    if(inOutDirection != NULL) {
-        direction = *inOutDirection;
-    }
-    if(!direction) {
-        edges0 = edges1;
-        edges1 = &this->edges;
-    }
-    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v1 = edges0->find(sourceId);
-    if(v1 == edges0->end()) {
-        v1 = edges0->find(targetId);
-        if(v1 == edges0->end()) {
-            v1 = edges1->find(sourceId);
-            if(v1 == edges1->end()) {
-                v1 = edges1->find(targetId);
-                if(v1 == edges1->end()) {
+Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool allDirections) {
+    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v1 = this->edges.find(sourceId);
+    if(v1 == this->edges.end()) {
+        v1 = this->edges.find(targetId);
+        if(v1 == this->edges.end()) {
+            if(!allDirections) {
+                return NULL;
+            }
+            v1 = this->edges.find(sourceId);
+            if(v1 == this->edges.end()) {
+                v1 = this->edges.find(targetId);
+                if(v1 == this->edges.end()) {
                     return NULL;
                 }
             }
-            direction = !direction;
-        }        
-    }
-    if(inOutDirection != NULL) {
-        *inOutDirection = direction;
+        }
     }
     std::map<unsigned int, Edge*>::iterator v2 = v1->second.find(targetId);
     if(v2 == v1->second.end()) {
@@ -159,34 +148,19 @@ Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool* inOutDi
     return v2->second;
 }
 
-std::map<unsigned int, Edge*>* Graph::GetEdges(unsigned int sourceId, bool* inOutDirection) {
-    bool direction = true;
-    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges0 = &this->edges;
-    std::map<unsigned int, std::map<unsigned int, Edge*>>* edges1 = &this->edgesFeedbacks;
-    if(inOutDirection != NULL) {
-        direction = *inOutDirection;
-    }
-    if(!direction) {
-        edges0 = edges1;
-        edges1 = &this->edges;
-    }
-    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v;    
-    v = edges0->find(sourceId);
-    if(v == edges0->end()) {
-        v = edges1->find(sourceId);
-        if(v == edges1->end()) {
+std::map<unsigned int, Edge*>* Graph::GetEdges(unsigned int sourceId) {
+    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v = this->edges.find(sourceId);
+    if(v == this->edges.end()) {
+        v = this->edges.find(sourceId);
+        if(v == this->edges.end()) {
             return NULL;
         }
-        direction = !direction;
-    }
-    if(inOutDirection != NULL) {
-        *inOutDirection = direction;
     }
     return &v->second;
 }
 
-double Graph::GetWeight(unsigned int sourceId, unsigned int targetId, int factorId, bool* inOutDirection) {
-    Edge *edge = this->GetEdge(sourceId, targetId, inOutDirection);
+double Graph::GetWeight(unsigned int sourceId, unsigned int targetId, int factorId) {
+    Edge *edge = this->GetEdge(sourceId, targetId);
     if(edge != NULL) {
         return edge->GetWeight(factorId);
     }
@@ -243,33 +217,19 @@ bool Graph::RemoveNode(unsigned int id) {
     return true;
 }
 
-Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId, bool biDirection, bool baseDirection) {
+Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId) {
     Node* source = GetNode(sourceId);
     Node* target = GetNode(targetId);
     if(source != NULL && source != target) {
-        Edge *edge = this->GetEdge(sourceId, targetId);
+        Edge *edge = this->GetEdge(sourceId, targetId, false);
         if(edge == NULL) {
-            edge = new Edge(source, target, biDirection);
-            std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it;
-            if(baseDirection || biDirection){
-                it = this->edges.find(sourceId);
-                if(it == this->edges.end()) {                    
-                    std::map<unsigned int, Edge*> m;
-                    m[targetId] = edge;
-                    this->edges[sourceId] = m;
-                } else {
-                    it->second[targetId] = edge;
-                }
-            }
-            if(biDirection || !baseDirection) {
-                it = this->edgesFeedbacks.find(targetId);
-                if(it == this->edgesFeedbacks.end()) {
-                    std::map<unsigned int, Edge*> m;
-                    m[sourceId] = edge;
-                    this->edgesFeedbacks[targetId] = m;
-                } else {
-                    it->second[sourceId] = edge;
-                }
+            edge = new Edge(source, target);
+            std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it = this->edges.find(sourceId);
+            if(it == this->edges.end()) {
+                std::map<unsigned int, Edge*> m; m[targetId] = edge;
+                this->edges[sourceId] = m;
+            } else {
+                it->second[targetId] = edge;
             }
         }
         return edge;
@@ -308,35 +268,6 @@ bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {
             this->edges.erase(itE);
         }
     }
-    //Проходимся по обратным граням и удаляем все что связано с текущей нодой
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edgesFeedbacks.begin(); itE != this->edgesFeedbacks.end(); itE++) {
-        bool remove = false;
-        if(itE->first == nodeId) {
-            remove = true;
-        }
-        for(std::map<unsigned int, Edge*>::iterator itES = itE->second.begin(); itES != itE->second.end(); itES++) {
-            if(remove) {
-                if(itES->second != NULL) {
-                    Edge* edge = itES->second;
-                    delete edge;
-                }
-                itE->second.erase(itES);
-                countRemove++;
-            } else {
-                if(itES->first == nodeId) {
-                    if(itES->second != NULL) {
-                        Edge* edge = itES->second;
-                        delete edge;
-                    }
-                    itE->second.erase(itES);
-                    countRemove++;
-                }
-            }
-        }
-        if(remove) {
-            this->edgesFeedbacks.erase(itE);
-        }
-    }
     if(countRemove > 0) {
         return true;
     }
@@ -354,9 +285,7 @@ void Graph::Clear() {
         }
         itE->second.clear();
     }
-    this->edges.clear();
-    this->edgesFeedbacks.clear();
-    
+    this->edges.clear();    
     for(std::map<unsigned int, Node*>::iterator itN = this->nodes.begin(); itN != this->nodes.end(); itN++) {
         Node* node = itN->second;
         if(node != NULL) {

@@ -22,10 +22,35 @@ int main(int argc, const char * argv[]) {
     // Добавляем переходы из примера
     AddTransitionsExample01(&graph);
     
+    /*
+    Roads roads;
+    
+    std::vector<Node*> road0;
+    road0.push_back(new Node(1, 55.777147765134266, 37.65421418007463));
+    road0.push_back(new Node(2, 55.77626678546183, 37.65548018272966));
+    roads.AddRoad(road0);
+    
+    std::vector<Node*> road1;
+    road1.push_back(new Node(3, 55.777037643764295, 37.654165900312364));
+    road1.push_back(new Node(4, 55.777104018325915, 37.65446362551302));
+    road1.push_back(new Node(5, 55.77650966027079, 37.65471038874239));
+    road1.push_back(new Node(6, 55.77666202195603, 37.65536484774202));
+    roads.AddRoad(road1);
+    
+    std::vector<Node*> road2;
+    road2.push_back(new Node(7, 55.77628488798426, 37.655498958192766));
+    road2.push_back(new Node(8, 55.77647798103372, 37.65542385634035));
+    road2.push_back(new Node(9, 55.77638596024666, 37.6550912624225));
+    road2.push_back(new Node(10, 55.776826451225254, 37.654490447603166));
+    roads.AddRoad(road2);
+    
+    roads.FillGraph(&graph);
+    */
+    
     unsigned int myLocationId = graph.GetMaxNodeID()+1;
     
     // Берем наше положение и добавляем на него ноду
-    graph.AddNode(myLocationId, "MyGeoPosition", 55.77682041713589, 37.654655277729034, 2); // Первый этаж
+    graph.AddNode(myLocationId, "MyGeoPosition", 55.77610537093167, 37.65538118197583, 1); // Первый этаж
     
     // Проводим поиск ближайшей ноды для нашей гео позиции - для создания ребра
     Node* n = graph.GetNearestNode(myLocationId);
@@ -33,7 +58,7 @@ int main(int argc, const char * argv[]) {
         // Добавляем ребро
         graph.AddEdge(myLocationId, n->GetID());
         
-        Node* to = graph.GetNearestNode(55.77625170002003, 37.65544384717941, 2); // Второй этаж;
+        Node* to = graph.GetNearestNode(55.7769984223793, 37.65439449576661, 1); // Второй этаж;
         if(to != NULL) {
             // Проводим поиск
             DijkstraSearch alg(&graph);

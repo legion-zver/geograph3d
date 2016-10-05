@@ -17,7 +17,7 @@ namespace GeoGraph3D {
     class Edge {
     public:
         //MARK: Constructors
-        Edge(Node* _source, Node* _target, bool _biDirectional = true);
+        Edge(Node* _source, Node* _target);
         
         //MARK: Change
         void AddFactor(unsigned int id, double value);
@@ -26,16 +26,13 @@ namespace GeoGraph3D {
         //MARK: Gets
         Node*   GetSource();
         Node*   GetTarget();
-        bool    IsBiDirectional();
         double  GetFactor(unsigned int id);
         unsigned long GetCountFactors();
-        double  GetWeight(int factorID = -1);
+        double  GetWeight(int factorID = -1, double levelSize = 0.03);
         
     private:
         Node* source; // Нода источник
         Node* target; // Нода цель
-        
-        bool biDirectional; // Флаг двунаправленности, по умолчанию true
         
         // Факторы влияющие на прохождение
         std::map<unsigned int, double> factors;

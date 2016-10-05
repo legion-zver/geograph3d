@@ -26,7 +26,7 @@ void FillGraphExample01(Graph* graph) {
                         auto objNode = objNodes[j];                    
                         double lat = objNode["lat"].as_double();
                         double lng = objNode["lng"].as_double();
-                        road.push_back(new Node(currentNodeId++, lat, lng, (double)floor));
+                        road.push_back(new Node(currentNodeId++, lat, lng, floor));
                     }
                     roads.AddRoad(road);
                 }
@@ -61,10 +61,10 @@ void AddTransitionsExample01(Graph* graph) {
                 double lat = location["lat"].as_double();
                 double lng = location["lng"].as_double();
                 // Поиск точек рядом на этаже
-                Node* nereast = graph->GetNearestNode(lat, lng, (double)floor, 0.0);
+                Node* nereast = graph->GetNearestNode(lat, lng, floor, 0.0);
                 if(nereast != NULL) {
                     // Присоединяем переход к ближайшей ноде
-                    graph->AddNode((unsigned int)(layerId+transitionId), name, lat, lng, (double)floor);
+                    graph->AddNode((unsigned int)(layerId+transitionId), name, lat, lng, floor);
                     graph->AddEdge(nereast->GetID(), (unsigned int)(layerId+transitionId));
                     
                     // Добавляем в очередь переходы между этажами

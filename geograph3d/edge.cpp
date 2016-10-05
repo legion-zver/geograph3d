@@ -12,10 +12,9 @@ using namespace GeoGraph3D;
 
 //MARK: Constructors
 
-Edge::Edge(Node* _source, Node* _target, bool _biDirectional) {
+Edge::Edge(Node* _source, Node* _target) {
     this->source = _source;
     this->target = _target;
-    this->biDirectional = _biDirectional;
 }
 
 //MARK: Change
@@ -37,13 +36,11 @@ Node* Edge::GetSource() { return this->source; }
 
 Node* Edge::GetTarget() { return this->target; }
 
-bool Edge::IsBiDirectional() { return this->biDirectional; }
-
 double Edge::GetFactor(unsigned int id) { return this->factors[id]; }
 
 unsigned long Edge::GetCountFactors() { return this->factors.size(); }
 
-double Edge::GetWeight(int factorID) {
+double Edge::GetWeight(int factorID, double levelSize) {
     if(this->source != NULL && this->target != NULL) {
         double f = 1.0f;
         if(factorID >= 0) {
@@ -52,7 +49,7 @@ double Edge::GetWeight(int factorID) {
                 f = v->second;
             }
         }
-        double distance = this->source->DistanceTo(this->target);
+        double distance = this->source->DistanceTo(this->target, levelSize);
         if(distance >= 0.0) {
             return distance*f;
         }

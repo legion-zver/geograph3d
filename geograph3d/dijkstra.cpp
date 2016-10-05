@@ -15,7 +15,7 @@ DijkstraSearch::DijkstraSearch(Graph* _graph) {
 }
 
 
-ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId, int factorId) {
+ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId, int factorId, double levelSize) {
     ResultPath result;
     result.haveErrors = true;
     if(this->graph != NULL) {
@@ -38,18 +38,17 @@ ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId
                 }
             }
             minHeap.Sort();
-            bool direction = true;
             std::map<unsigned int, Node*> prev;
             while(minHeap.values.size() != 0) {
                 NodeDistance u = minHeap.Pop();
                 if(u.id == targetId) {
                     break;
                 }
-                std::map<unsigned int, Edge*>* cmap = this->graph->GetEdges(u.id, &direction);
+                std::map<unsigned int, Edge*>* cmap = this->graph->GetEdges(u.id);
                 if(cmap != NULL) {
                     for(std::map<unsigned int, Edge*>::const_iterator itE = cmap->begin(); itE != cmap->end(); itE++) {
                         if(itE->second != NULL) {
-                            double weight = itE->second->GetWeight(factorId);
+                            double weight = itE->second->GetWeight(factorId, levelSize);
                             if(weight < 0) {
                                 break;
                             }
@@ -57,14 +56,8 @@ ResultPath DijkstraSearch::FindPath(unsigned int sourceId, unsigned int targetId
                             unsigned int tid = itE->first;
                             if(distance[tid] > alt) {
                                 distance[tid] = alt;
-                                if(direction) {
-                                    if(tid != itE->second->GetSource()->GetID()) {
-                                        prev[tid] = itE->second->GetSource();
-                                    }
-                                } else {
-                                    if(tid != itE->second->GetTarget()->GetID()) {
-                                        prev[tid] = itE->second->GetTarget();
-                                    }
+                                if(tid != itE->second->GetSource()->GetID()) {
+                                    prev[tid] = itE->second->GetSource();
                                 }
                                 minHeap.UpdateDistance(tid, alt);
                             }

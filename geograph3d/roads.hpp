@@ -13,10 +13,23 @@
 #include <vector>
 
 namespace GeoGraph3D {
+    
+    enum Direction {
+        Forward,
+        Backward,
+        All
+    };
+    
+    // Для внутреннего хранения
+    struct Road {
+        std::vector<Node*> nodes;
+        Direction direction;
+    };
+    
     class Roads {
     public:
         // AddRoad - добавление дороги (списка точек)
-        bool AddRoad(std::vector<Node*> road);
+        bool AddRoad(std::vector<Node*> nodes, Direction direction = All);
         // FillGraph - Заполняем граф из дорог
         bool FillGraph(Graph *graph);
         // Clear - очищаем списки дорог и пересечений
@@ -26,7 +39,7 @@ namespace GeoGraph3D {
         void ClearCrossess();
         unsigned int GetMaxNodeID();
     private:
-        std::vector<std::vector<Node*>> roads;
+        std::vector<Road> roads;
         std::map<unsigned int, std::vector<unsigned int>> crossess;
     };
 }

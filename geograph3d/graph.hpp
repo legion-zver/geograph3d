@@ -13,6 +13,7 @@
 
 namespace GeoGraph3D {
     #define DBL_MAX 1.79769e+308
+    
     // Граф
     class Graph {
     public:
@@ -27,9 +28,9 @@ namespace GeoGraph3D {
         const std::map<unsigned int, Node*>* GetNodes();
         
         unsigned long GetCountNodes();
-        Edge* GetEdge(unsigned int sourceId, unsigned int targetId, bool* inOutDirection = NULL);
-        std::map<unsigned int, Edge*>* GetEdges(unsigned int sourceId, bool* inOutDirection = NULL);
-        double GetWeight(unsigned int sourceId, unsigned int targetId, int factorId = -1, bool* inOutDirection = NULL);
+        Edge* GetEdge(unsigned int sourceId, unsigned int targetId, bool allDirections = true);
+        std::map<unsigned int, Edge*>* GetEdges(unsigned int sourceId);
+        double GetWeight(unsigned int sourceId, unsigned int targetId, int factorId = -1);
         unsigned long GetCountEdges();
         
         //MARK: Sets
@@ -40,16 +41,14 @@ namespace GeoGraph3D {
         bool RemoveNode(unsigned int id);        
         
         /*
-         AddEdge - добавляем ребра графа
+         AddEdge - добавляем ребро графа
          - sourceId - начало (нода)
          - targetId - конец (нода)
-         - biDistance - двойное направление (по умолчанию: true)
-         - findCrossings - поиск пересечений при добавлении (по умолчанию: false)
          */
         
-        Edge* AddEdge(unsigned int sourceId, unsigned int targetId, bool biDirection = true, bool baseDirection = true);
+        Edge* AddEdge(unsigned int sourceId, unsigned int targetId);
         
-        bool  RemoveEdgesContainNode(unsigned int nodeId);
+        bool RemoveEdgesContainNode(unsigned int nodeId);
         
         //MARK: Clear
         void Clear();
@@ -57,7 +56,6 @@ namespace GeoGraph3D {
     private:
         std::map<unsigned int, Node*> nodes;                                  // ноды графа
         std::map<unsigned int, std::map<unsigned int, Edge*>> edges;          // ребра между нодами
-        std::map<unsigned int, std::map<unsigned int, Edge*>> edgesFeedbacks; // ребра между нодами - обратные связи
     };
 };
 

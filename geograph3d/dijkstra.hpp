@@ -16,12 +16,8 @@ namespace GeoGraph3D {
     class DijkstraSearch {
     public:
         DijkstraSearch(Graph* _graph);
-        
-        ResultPath FindPath(unsigned int fromId, unsigned int toId, int factorId = -1);
-        
-    private:
-        ResultPath Search(unsigned int sourceId, unsigned int targetId, int factorId, bool forward);
-        
+        ResultPath FindPath(unsigned int fromId, unsigned int toId, int factorId = -1, double levelSize = 0.03);
+
     private:
         Graph* graph;
     };
