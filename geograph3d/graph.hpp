@@ -18,10 +18,10 @@ namespace GeoGraph3D {
     public:
         //MARK: Gets
         unsigned int GetMaxNodeID();
-        Node* GetNode(double latitude, double longitude, double level);     // Получить ноду по GEO позиции
+        Node* GetNode(double latitude, double longitude, int level);     // Получить ноду по GEO позиции
         Node* GetNode(unsigned int id);                                     // Получить ноду по ID
         Node* GetNode(std::string tag);                                     // Получить ноду по тегу
-        Node* GetNearestNode(double latitude, double longitude, double level, double minRadius = 0.0);
+        Node* GetNearestNode(double latitude, double longitude, int level, double minRadius = 0.0);
         Node* GetNearestNode(unsigned int id, double minRadius = 0.0);      // Получить ближайщую ноду для ноды с ID (с учетом минимального радиуса поиска)
         Node* GetNodeByIndex(unsigned int index);
         const std::map<unsigned int, Node*>* GetNodes();
@@ -34,8 +34,8 @@ namespace GeoGraph3D {
         
         //MARK: Sets
         void  AddNode(Node* node);
-        Node* AddNode(unsigned int id, std::string tag, double latitude = 0.0, double longitude = 0.0, double level = 0.0);
-        Node* AddNode(unsigned int id, double latitude = 0.0, double longitude = 0.0, double level = 0.0);
+        Node* AddNode(unsigned int id, std::string tag, double latitude = 0.0, double longitude = 0.0, int level = 0.0);
+        Node* AddNode(unsigned int id, double latitude = 0.0, double longitude = 0.0, int level = 0.0);
         
         bool RemoveNode(unsigned int id);        
         

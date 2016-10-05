@@ -161,13 +161,16 @@ void Roads::FindCrossess() {
 #endif
                                             
                                             std::vector<unsigned int> crossList;
+                                            
+                                            // Добавляем связи точки пересечения
                                             crossList.push_back(p0->GetID());
                                             crossList.push_back(r0->GetID());
                                             crossList.push_back(p1->GetID());
                                             crossList.push_back(r1->GetID());
+                                            
                                             this->crossess[(unsigned int)crossId] = crossList;
-                                            this->roads[i].insert(this->roads[i].begin()+ip, newNode);
-                                            this->roads[j].insert(this->roads[j].begin()+ir, newNode);
+                                            this->roads[i].insert(this->roads[i].begin()+ip-1, newNode);
+                                            this->roads[j].insert(this->roads[j].begin()+ir-1, newNode);
                                             crossId++;
                                             p1 = newNode;
                                             ir++;

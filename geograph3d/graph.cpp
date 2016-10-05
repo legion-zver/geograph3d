@@ -51,11 +51,11 @@ Node* Graph::GetNodeByIndex(unsigned int index) {
     return NULL;
 }
 
-Node* Graph::GetNode(double latitude, double longitude, double level) {
+Node* Graph::GetNode(double latitude, double longitude, int level) {
     return this->GetNearestNode(latitude, longitude, level, -1.0);
 }
 
-Node* Graph::GetNearestNode(double latitude, double longitude, double level, double minRadius) {
+Node* Graph::GetNearestNode(double latitude, double longitude, int level, double minRadius) {
     double minWeight = DBL_MAX;
     unsigned int minId = 0;
     for(std::map<unsigned int, Node*>::iterator itN = this->nodes.begin(); itN != this->nodes.end(); itN++) {
@@ -210,7 +210,7 @@ void Graph::AddNode(Node* node) {
     }
 }
 
-Node* Graph::AddNode(unsigned int id, std::string tag, double latitude, double longitude, double level) {
+Node* Graph::AddNode(unsigned int id, std::string tag, double latitude, double longitude, int level) {
     if(this->nodes.find(id) == this->nodes.end()) {
         Node* n = new Node(id, tag, latitude, longitude, level);
         this->nodes[id] = n;
@@ -219,7 +219,7 @@ Node* Graph::AddNode(unsigned int id, std::string tag, double latitude, double l
     return NULL;
 }
 
-Node* Graph::AddNode(unsigned int id, double latitude, double longitude, double level) {
+Node* Graph::AddNode(unsigned int id, double latitude, double longitude, int level) {
     if(this->nodes.find(id) == this->nodes.end()) {
         Node* n = new Node(id, latitude, longitude, level);
         this->nodes[id] = n;

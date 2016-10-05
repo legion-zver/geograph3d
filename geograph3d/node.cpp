@@ -21,7 +21,7 @@ Node::Node(unsigned int _id) {
     this->id = _id;
 }
 
-Node::Node(unsigned int _id, std::string _tag, double _latitude, double _longitude, double _level) {
+Node::Node(unsigned int _id, std::string _tag, double _latitude, double _longitude, int _level) {
     this->id        = _id;
     this->tag       = _tag;
     this->latitude  = _latitude;
@@ -29,7 +29,7 @@ Node::Node(unsigned int _id, std::string _tag, double _latitude, double _longitu
     this->level     = _level;
 }
 
-Node::Node(unsigned int _id, double _latitude, double _longitude, double _level) {
+Node::Node(unsigned int _id, double _latitude, double _longitude, int _level) {
     this->id        = _id;
     this->latitude  = _latitude;
     this->longitude = _longitude;
@@ -49,7 +49,7 @@ unsigned int Node::GetID() { return this->id; }
 std::string Node::GetTag() { return this->tag; }
 double Node::GetLatitude() { return this->latitude; }
 double Node::GetLongitude() { return this->longitude; }
-double Node::GetLevel() { return this->level; }
+int Node::GetLevel() { return this->level; }
 
 //MARK: Math
 
@@ -68,16 +68,16 @@ double geoDistance(double latitude1, double longitude1, double latitude2, double
     return EARTH_RADIUS_KM*(2 * asin(sqrt(pow(sin(d_lat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(d_lng / 2), 2))));
 }
 
-double Node::DistanceTo(Node* node) {
+double Node::DistanceTo(Node* node, double _levelSize) {
     if(node != NULL) {        
-        return this->DistanceTo(node->GetLatitude(), node->GetLongitude(), node->GetLevel());
+        return this->DistanceTo(node->GetLatitude(), node->GetLongitude(), node->GetLevel(), _levelSize);
     }
     return -1.0f;
 }
 
-double Node::DistanceTo(double _latitude, double _longitude, double _level) {
+double Node::DistanceTo(double _latitude, double _longitude, int _level, double _levelSize) {
     double d = geoDistance(this->latitude, this->longitude, _latitude, _longitude);
-    return sqrt(pow(d, 2) + pow(fabs(this->level - _level), 2));
+    return sqrt(pow(d, 2) + pow(fabs((this->level - _level)*_levelSize), 2));
 }
 
 bool Node::CompareLocation(double _latitude, double _longitude) {

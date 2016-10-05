@@ -25,8 +25,8 @@ namespace GeoGraph3D {
         //MARK: Constructors
         
         Node(unsigned int _id);
-        Node(unsigned int _id, std::string _tag, double _latitude = 0, double _longitude = 0, double _level = 0);
-        Node(unsigned int _id, double _latitude = 0, double _longitude = 0, double _level = 0);
+        Node(unsigned int _id, std::string _tag, double _latitude = 0, double _longitude = 0, int _level = 0);
+        Node(unsigned int _id, double _latitude = 0, double _longitude = 0, int _level = 0);
         
         //MARK: Sets
         
@@ -41,13 +41,13 @@ namespace GeoGraph3D {
         std::string     GetTag();
         double          GetLatitude();
         double          GetLongitude();
-        double          GetLevel();        
+        int             GetLevel();
         bool            CompareLocation(double _latitude, double _longitude);
         
         //MARK: Math
         
-        double DistanceTo(Node* node);
-        double DistanceTo(double _latitude, double _longitude, double _level);
+        double DistanceTo(Node* node, double _levelSize = 0.03);
+        double DistanceTo(double _latitude, double _longitude, int _level, double _levelSize = 0.03);
         
         // CheckPointInLine - Проверяем находится ли точка на линии
         static bool CheckPointInLine2D(double latitude, double longitude, Node* p1, Node* p2);
@@ -60,7 +60,7 @@ namespace GeoGraph3D {
         std::string     tag;        // Тег - имя
         double          latitude;   // Широта
         double          longitude;  // Долгота
-        double          level;      // Высота
+        int             level;      // Высота - этаж
     };
 };
 
