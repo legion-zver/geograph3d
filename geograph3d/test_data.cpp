@@ -71,10 +71,16 @@ void AddTransitionsExample01(Graph* graph) {
                     auto transitionFrom = transition["transitionFrom"].as_int();
                     auto transitionTo = transition["transitionTo"].as_int();
                     if(transitionFrom > 0 && transitionTo > 0) {
-                        TransitionInfo info;
-                        info.FromID = (unsigned int)transitionFrom;
-                        info.ToID = (unsigned int)transitionTo;
-                        forNextEdges.push_back(info);
+                        TransitionInfo infoForward;
+                        infoForward.FromID = (unsigned int)transitionFrom;
+                        infoForward.ToID = (unsigned int)transitionTo;
+                        forNextEdges.push_back(infoForward);
+                        
+                        // В обратную сторону
+                        TransitionInfo infoBackward;
+                        infoBackward.FromID = (unsigned int)transitionTo;
+                        infoBackward.ToID = (unsigned int)transitionFrom;
+                        forNextEdges.push_back(infoBackward);
                     }
                 }
             }

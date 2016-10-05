@@ -50,7 +50,7 @@ int main(int argc, const char * argv[]) {
     unsigned int myLocationId = graph.GetMaxNodeID()+1;
     
     // Берем наше положение и добавляем на него ноду
-    graph.AddNode(myLocationId, "MyGeoPosition", 55.77610537093167, 37.65538118197583, 1); // Первый этаж
+    graph.AddNode(myLocationId, "MyGeoPosition", 55.77667446707311, 37.65513002872467, 1); // Первый этаж
     
     // Проводим поиск ближайшей ноды для нашей гео позиции - для создания ребра
     Node* n = graph.GetNearestNode(myLocationId);
@@ -58,7 +58,7 @@ int main(int argc, const char * argv[]) {
         // Добавляем ребро
         graph.AddEdge(myLocationId, n->GetID());
         
-        Node* to = graph.GetNearestNode(55.7769984223793, 37.65439449576661, 2); // Второй этаж;
+        Node* to = graph.GetNearestNode(55.77661782674582, 37.65478943008929, 1); // Второй этаж;
         if(to != NULL) {
             // Проводим поиск
             DijkstraSearch alg(&graph);
