@@ -5,6 +5,8 @@ using namespace GeoGraph3D;
 
 #define FLOOR_HEIGHT 0.03f;
 
+//#define DEBUG_TEST_TRANSITIONS
+
 void FillGraphExample01(Graph* graph) {
     if(graph != NULL) {
         Roads roads;
@@ -43,7 +45,7 @@ struct TransitionInfo {
 
 void AddTransitionsExample01(Graph* graph) {
     if(graph != NULL) {
-        std::string jsonString = "[{\"transitionId\":86,\"transitionTypeId\":2,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u042d\u0441\u043a\u0430\u043b\u0430\u0442\u043e\u0440 1\",\"floor\":1,\"radius\":100,\"transitionFrom\":86,\"transitionTo\":88,\"location\":{\"lat\":\"55.7768890548472\",\"lng\":\"37.6546230912209\"}},{\"transitionId\":87,\"transitionTypeId\":2,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u042d\u0441\u043a\u0430\u043b\u0430\u0442\u043e\u0440 2\",\"floor\":1,\"radius\":100,\"transitionFrom\":0,\"transitionTo\":0,\"location\":{\"lat\":\"55.7769486413338\",\"lng\":\"37.6548993587494\"}},{\"transitionId\":88,\"transitionTypeId\":2,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u042d\u0441\u043a\u0430\u043b\u0430\u0442\u043e\u0440 3\",\"floor\":2,\"radius\":100,\"transitionFrom\":0,\"transitionTo\":0,\"location\":{\"lat\":\"55.7768883005873\",\"lng\":\"37.6546204090118\"}},{\"transitionId\":89,\"transitionTypeId\":2,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u042d\u0441\u043a\u0430\u043b\u0430\u0442\u043e\u0440 4\",\"floor\":2,\"radius\":100,\"transitionFrom\":89,\"transitionTo\":87,\"location\":{\"lat\":\"55.7769471328163\",\"lng\":\"37.6548899710178\"}},{\"transitionId\":90,\"transitionTypeId\":8,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u0412\u044b\u0445\u043e\u0434\",\"floor\":1,\"radius\":100,\"transitionFrom\":0,\"transitionTo\":0,\"location\":{\"lat\":\"55.777013507532\",\"lng\":\"37.6546834409237\"}},{\"transitionId\":93,\"transitionTypeId\":8,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u0412\u0445\u043e\u0434\",\"floor\":1,\"radius\":100,\"transitionFrom\":0,\"transitionTo\":0,\"location\":{\"lat\":\"55.7759997722792\",\"lng\":\"37.6555082201958\"}}]";
+        std::string jsonString = "[{\"transitionId\":90,\"transitionTypeId\":8,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u0412\u044b\u0445\u043e\u0434\",\"floor\":1,\"radius\":100,\"transitionFrom\":0,\"transitionTo\":94,\"location\":{\"lat\":\"55.777013507532\",\"lng\":\"37.6546834409237\"}},{\"transitionId\":93,\"transitionTypeId\":8,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u0412\u0445\u043e\u0434\",\"floor\":1,\"radius\":100,\"transitionFrom\":0,\"transitionTo\":0,\"location\":{\"lat\":\"55.7759997722792\",\"lng\":\"37.6555082201958\"}},{\"transitionId\":97,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043001\",\"floor\":0,\"radius\":284,\"transitionFrom\":0,\"transitionTo\":105,\"location\":{\"lat\":\"55.7766808785588\",\"lng\":\"37.6550978422165\"}},{\"transitionId\":98,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u043d\u0438\u0446\u043002\",\"floor\":0,\"radius\":284,\"transitionFrom\":0,\"transitionTo\":104,\"location\":{\"lat\":\"55.7766499537255\",\"lng\":\"37.6549516618252\"}},{\"transitionId\":99,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043003\",\"floor\":0,\"radius\":246,\"transitionFrom\":0,\"transitionTo\":106,\"location\":{\"lat\":\"55.7766114862155\",\"lng\":\"37.6552279293537\"}},{\"transitionId\":100,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043004\",\"floor\":0,\"radius\":359,\"transitionFrom\":0,\"transitionTo\":107,\"location\":{\"lat\":\"55.7764221651724\",\"lng\":\"37.6551447808742\"}},{\"transitionId\":101,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043005\",\"floor\":0,\"radius\":171,\"transitionFrom\":0,\"transitionTo\":108,\"location\":{\"lat\":\"55.7762905450208\",\"lng\":\"37.6553526520729\"}},{\"transitionId\":102,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043007\",\"floor\":0,\"radius\":171,\"transitionFrom\":0,\"transitionTo\":109,\"location\":{\"lat\":\"55.7762796080827\",\"lng\":\"37.6552849262953\"}},{\"transitionId\":104,\"transitionTypeId\":2,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043012\",\"floor\":1,\"radius\":322,\"transitionFrom\":98,\"transitionTo\":110,\"location\":{\"lat\":\"55.7768339938356\",\"lng\":\"37.6546646654606\"}},{\"transitionId\":105,\"transitionTypeId\":2,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043011\",\"floor\":1,\"radius\":284,\"transitionFrom\":97,\"transitionTo\":111,\"location\":{\"lat\":\"55.7768792494673\",\"lng\":\"37.6549355685711\"}},{\"transitionId\":106,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043013\",\"floor\":1,\"radius\":265,\"transitionFrom\":99,\"transitionTo\":112,\"location\":{\"lat\":\"55.7768272054864\",\"lng\":\"37.6552198827267\"}},{\"transitionId\":107,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043013\",\"floor\":1,\"radius\":265,\"transitionFrom\":100,\"transitionTo\":0,\"location\":{\"lat\":\"55.7764425304284\",\"lng\":\"37.6548470556736\"}},{\"transitionId\":108,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u043d\u0438\u0446\u043014\",\"floor\":1,\"radius\":246,\"transitionFrom\":101,\"transitionTo\":113,\"location\":{\"lat\":\"55.7762856422558\",\"lng\":\"37.6553821563721\"}},{\"transitionId\":109,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043015\",\"floor\":1,\"radius\":265,\"transitionFrom\":102,\"transitionTo\":114,\"location\":{\"lat\":\"55.7762396316624\",\"lng\":\"37.6551756262779\"}},{\"transitionId\":110,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043022\",\"floor\":2,\"radius\":416,\"transitionFrom\":104,\"transitionTo\":0,\"location\":{\"lat\":\"55.7768585073093\",\"lng\":\"37.6546465605497\"}},{\"transitionId\":111,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043021\",\"floor\":2,\"radius\":397,\"transitionFrom\":105,\"transitionTo\":0,\"location\":{\"lat\":\"55.7769037629125\",\"lng\":\"37.6549228280783\"}},{\"transitionId\":112,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043033\",\"floor\":2,\"radius\":454,\"transitionFrom\":106,\"transitionTo\":0,\"location\":{\"lat\":\"55.7767155746841\",\"lng\":\"37.6551709324122\"}},{\"transitionId\":113,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043034\",\"floor\":2,\"radius\":341,\"transitionFrom\":108,\"transitionTo\":0,\"location\":{\"lat\":\"55.7761691071227\",\"lng\":\"37.655511572957\"}},{\"transitionId\":114,\"transitionTypeId\":1,\"directionTypeId\":3,\"shoppingCenterId\":57,\"shopId\":0,\"transitionShopId\":0,\"name\":\"\u041b\u0435\u0441\u0442\u043d\u0438\u0446\u043035\",\"floor\":2,\"radius\":359,\"transitionFrom\":109,\"transitionTo\":0,\"location\":{\"lat\":\"55.7761121594067\",\"lng\":\"37.6552715152502\"}}]";
         
         
         auto root = jute::parser::parse(jsonString);
@@ -64,30 +66,60 @@ void AddTransitionsExample01(Graph* graph) {
                 Node* nereast = graph->GetNearestNode(lat, lng, floor, 0.0);
                 if(nereast != NULL) {
                     // Присоединяем переход к ближайшей ноде
-                    graph->AddNode((unsigned int)(layerId+transitionId), name, lat, lng, floor);
-                    graph->AddEdge(nereast->GetID(), (unsigned int)(layerId+transitionId));
-                    
-                    // Добавляем в очередь переходы между этажами
-                    auto transitionFrom = transition["transitionFrom"].as_int();
-                    auto transitionTo = transition["transitionTo"].as_int();
-                    if(transitionFrom > 0 && transitionTo > 0) {
-                        TransitionInfo infoForward;
-                        infoForward.FromID = (unsigned int)transitionFrom;
-                        infoForward.ToID = (unsigned int)transitionTo;
-                        forNextEdges.push_back(infoForward);
+                    Node *node = graph->AddNode((unsigned int)(layerId+transitionId), name, lat, lng, floor);
+                    if(node != NULL) {
                         
-                        // В обратную сторону
-                        TransitionInfo infoBackward;
-                        infoBackward.FromID = (unsigned int)transitionTo;
-                        infoBackward.ToID = (unsigned int)transitionFrom;
-                        forNextEdges.push_back(infoBackward);
+                        // Два направления
+                        graph->AddEdge(nereast->GetID(), node->GetID());
+                        graph->AddEdge(node->GetID(), nereast->GetID());
+                        
+                        // Добавляем в очередь переходы между этажами
+                        auto transitionFrom = transition["transitionFrom"].as_int();
+                        auto transitionTo = transition["transitionTo"].as_int();
+                        if(transitionFrom > 0) {
+                            TransitionInfo infoForward;
+                            infoForward.FromID = (unsigned int)transitionFrom;
+                            infoForward.ToID = (unsigned int)transitionId;
+                            forNextEdges.push_back(infoForward);
+                            
+                            // В обратную сторону
+                            TransitionInfo infoBackward;
+                            infoBackward.FromID = (unsigned int)transitionId;
+                            infoBackward.ToID = (unsigned int)transitionFrom;
+                            forNextEdges.push_back(infoBackward);
+                        }
+                        if(transitionTo > 0) {
+                            TransitionInfo infoForward;
+                            infoForward.FromID = (unsigned int)transitionId;
+                            infoForward.ToID = (unsigned int)transitionTo;
+                            forNextEdges.push_back(infoForward);
+                            
+                            // В обратную сторону
+                            TransitionInfo infoBackward;
+                            infoBackward.FromID = (unsigned int)transitionTo;
+                            infoBackward.ToID = (unsigned int)transitionId;
+                            forNextEdges.push_back(infoBackward);
+                        }
+                    } else {
+                        printf("Error Add Transition\n");
                     }
+                } else {
+                    printf("Error Find Nearest Node For Transition\n");
                 }
             }
         }
         
         //Перебираем очередь
         for(int j=0;j<forNextEdges.size();j++) {
+#ifdef DEBUG_TEST_TRANSITIONS
+            Node *from = graph->GetNode(layerId + forNextEdges[j].FromID);
+            Node *to =graph->GetNode(layerId + forNextEdges[j].ToID);
+            if(from != NULL && to != NULL) {
+                printf("Add Transition Edge: level %d (id_%d) -> level %d (id_%d))\n", from->GetLevel(), from->GetID(), to->GetLevel(), to->GetID());
+            } else {
+                printf("Error Add Transition Edge (%d -> %d)\n", layerId + forNextEdges[j].FromID, layerId + forNextEdges[j].ToID);
+            }
+#endif
             graph->AddEdge(layerId + forNextEdges[j].FromID, layerId + forNextEdges[j].ToID);
         }
     }

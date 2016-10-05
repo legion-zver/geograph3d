@@ -80,7 +80,7 @@ Node* Graph::GetNearestNode(double latitude, double longitude, int level, double
             }
         }
     }
-    if(minWeight != DBL_MAX) {
+    if(minWeight < DBL_MAX-0.001) {
         return this->GetNode(minId);
     }
     return NULL;
