@@ -7,12 +7,20 @@
 //
 
 #include "search.hpp"
+#include <algorithm>
 
 using namespace GeoGraph3D;
 
+// Функция сравнения
+/*
+static bool nodeDistanceCompare(const NodeDistance &d1, const NodeDistance &d2) {
+    return d1.distance < d2.distance;
+}
+*/
+
 // Сортировка
 void NodeDistanceHeap::Sort() {
-    std::sort(this->values.begin(), this->values.end());
+    std::sort(this->values.begin(), this->values.end());//, nodeDistanceCompare);
 }
 
 void NodeDistanceHeap::Push(NodeDistance d) {

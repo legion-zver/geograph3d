@@ -33,7 +33,7 @@ namespace GeoGraph3D {
         std::vector<Node*> nodes;
         double             distance;
         bool               haveErrors;        
-    };
+    };        
 }
 
 #endif /* search_hpp */

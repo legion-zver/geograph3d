@@ -20,6 +20,9 @@ namespace GeoGraph3D {
         All
     };
     
+    // Для более правильной сборки под Android
+    typedef std::vector<unsigned int> IntArray;
+    
     // Для внутреннего хранения
     struct Road {
         std::vector<Node*> nodes;
@@ -40,7 +43,7 @@ namespace GeoGraph3D {
         unsigned int GetMaxNodeID();
     private:
         std::vector<Road> roads;
-        std::map<unsigned int, std::vector<unsigned int>> crossess;
+        std::map<unsigned int, IntArray> crossess;
     };
 }
 

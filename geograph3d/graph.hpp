@@ -12,7 +12,13 @@
 #include "edge.hpp"
 
 namespace GeoGraph3D {
+
+#ifndef DBL_MAX
     #define DBL_MAX 1.79769e+308
+#endif
+    
+    // Для более правильной сборки под Android
+    typedef std::map<unsigned int, Edge*> MapEdges;
     
     // Граф
     class Graph {
@@ -29,7 +35,7 @@ namespace GeoGraph3D {
         
         unsigned long GetCountNodes();
         Edge* GetEdge(unsigned int sourceId, unsigned int targetId, bool allDirections = true);
-        std::map<unsigned int, Edge*>* GetEdges(unsigned int sourceId);
+        MapEdges* GetEdges(unsigned int sourceId);
         double GetWeight(unsigned int sourceId, unsigned int targetId, int factorId = -1);
         unsigned long GetCountEdges();
         
@@ -59,7 +65,7 @@ namespace GeoGraph3D {
         
     private:
         std::map<unsigned int, Node*> nodes;                                  // ноды графа
-        std::map<unsigned int, std::map<unsigned int, Edge*>> edges;          // ребра между нодами
+        std::map<unsigned int, MapEdges> edges;          // ребра между нодами
     };
 };
 

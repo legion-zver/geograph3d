@@ -125,7 +125,7 @@ unsigned long Graph::GetCountNodes() {
 }
 
 Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool allDirections) {
-    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v1 = this->edges.find(sourceId);
+    std::map<unsigned int, MapEdges>::iterator v1 = this->edges.find(sourceId);
     if(v1 == this->edges.end()) {
         v1 = this->edges.find(targetId);
         if(v1 == this->edges.end()) {
@@ -141,15 +141,15 @@ Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool allDirec
             }
         }
     }
-    std::map<unsigned int, Edge*>::iterator v2 = v1->second.find(targetId);
+    MapEdges::iterator v2 = v1->second.find(targetId);
     if(v2 == v1->second.end()) {
         return NULL;
     }
     return v2->second;
 }
 
-std::map<unsigned int, Edge*>* Graph::GetEdges(unsigned int sourceId) {
-    std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator v = this->edges.find(sourceId);
+MapEdges* Graph::GetEdges(unsigned int sourceId) {
+    std::map<unsigned int, MapEdges>::iterator v = this->edges.find(sourceId);
     if(v == this->edges.end()) {
         v = this->edges.find(sourceId);
         if(v == this->edges.end()) {
@@ -169,7 +169,7 @@ double Graph::GetWeight(unsigned int sourceId, unsigned int targetId, int factor
 
 unsigned long Graph::GetCountEdges() {
     unsigned long count = 0;
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it = this->edges.begin(); it != this->edges.end(); it++) {
+    for(std::map<unsigned int, MapEdges>::iterator it = this->edges.begin(); it != this->edges.end(); it++) {
         count += it->second.size();
     }
     return count;
@@ -224,9 +224,9 @@ Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId) {
         Edge *edge = this->GetEdge(sourceId, targetId, false);
         if(edge == NULL) {
             edge = new Edge(source, target);
-            std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator it = this->edges.find(sourceId);
+            std::map<unsigned int, MapEdges>::iterator it = this->edges.find(sourceId);
             if(it == this->edges.end()) {
-                std::map<unsigned int, Edge*> m; m[targetId] = edge;
+                MapEdges m; m[targetId] = edge;
                 this->edges[sourceId] = m;
             } else {
                 it->second[targetId] = edge;
@@ -240,12 +240,12 @@ Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId) {
 bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {
     unsigned long countRemove = 0;
     //Проходимся по граням и удаляем все что связано с текущей нодой
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edges.begin(); itE != this->edges.end(); itE++) {
+    for(std::map<unsigned int, MapEdges>::iterator itE = this->edges.begin(); itE != this->edges.end(); itE++) {
         bool remove = false;
         if(itE->first == nodeId) {
             remove = true;
         }
-        for(std::map<unsigned int, Edge*>::iterator itES = itE->second.begin(); itES != itE->second.end(); itES++) {
+        for(MapEdges::iterator itES = itE->second.begin(); itES != itE->second.end(); itES++) {
             if(remove) {
                 if(itES->second != NULL) {
                     Edge* edge = itES->second;
@@ -293,8 +293,8 @@ Node* Graph::AddNodeAndEdges(unsigned int id, std::string tag, double latitude, 
 
 //MARK: Clear
 void Graph::Clear() {
-    for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edges.begin(); itE != this->edges.end(); itE++) {
-        for(std::map<unsigned int, Edge*>::iterator itES = itE->second.begin(); itES != itE->second.end(); itES++) {
+    for(std::map<unsigned int, MapEdges>::iterator itE = this->edges.begin(); itE != this->edges.end(); itE++) {
+        for(MapEdges::iterator itES = itE->second.begin(); itES != itE->second.end(); itES++) {
             Edge* edge = itES->second;
             if(edge != NULL) {
                 delete edge;

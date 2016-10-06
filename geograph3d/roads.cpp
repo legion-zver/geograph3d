@@ -71,7 +71,7 @@ bool Roads::FillGraph(Graph *graph) {
             }
         }
         // Как только закончили добавлять дороги, добавляем ребра пересечений
-        for(std::map<unsigned int, std::vector<unsigned int>>::iterator itCr = this->crossess.begin(); itCr != this->crossess.end();  itCr++) {
+        for(std::map<unsigned int, IntArray>::iterator itCr = this->crossess.begin(); itCr != this->crossess.end();  itCr++) {
             unsigned long count = itCr->second.size();
             for(unsigned long i=0; i < count; i++) {
                 graph->AddEdge(itCr->first, itCr->second[i]);
@@ -92,7 +92,7 @@ void Roads::Clear(bool removeFromMemory) {
 }
 
 void Roads::ClearCrossess() {
-    for(std::map<unsigned int, std::vector<unsigned int>>::iterator itCr = this->crossess.begin(); itCr != this->crossess.end();  itCr++) {
+    for(std::map<unsigned int, IntArray>::iterator itCr = this->crossess.begin(); itCr != this->crossess.end();  itCr++) {
         Node* forRemove = NULL;
         for(std::vector<Road>::iterator itR = this->roads.begin(); itR != this->roads.end(); itR++) {
             for(unsigned long i=0; i< itR->nodes.size(); i++) {
@@ -167,7 +167,7 @@ void Roads::FindCrossess() {
                                             printf("{\"type\":\"Feature\",\"properties\":{\"marker-color\":\"#AA00BB\",\"marker-size\":\"small\",\"id\":%d, \"t-t\":\"%lu - %lu\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[%f,%f]}},\n", crossId, i, j, cross.longitude, cross.latitude);
 #endif
                                             
-                                            std::vector<unsigned int> crossList;
+                                            IntArray crossList;
                                             
                                             // Добавляем связи точки пересечения
                                             crossList.push_back(p0->GetID());

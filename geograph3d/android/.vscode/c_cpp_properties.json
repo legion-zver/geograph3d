@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Java",
+            "includePath": ["/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/include"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
+        },
+        {
+            "name": "Mac",
+            "includePath": ["/usr/include"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
+        },
+        {
+            "name": "Linux",
+            "includePath": ["/usr/include"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
+        }        
+    ]
+}
