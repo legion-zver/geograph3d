@@ -3,6 +3,8 @@ package com.ppapp.geograph3d;
 public class JGraph extends JNativePointer {
 
     // Нативные функции
+    private native long     createGraph();
+    private native void     destroyGraph(long nativePointer);
     private native long     getNearestNode(long nativePointer, long id, double minRadius);
     private native long     getNearestNode(long nativePointer, double latitude, double longitude, int level, double minRadius);
     private native long     getNode(long nativePointer, long id);

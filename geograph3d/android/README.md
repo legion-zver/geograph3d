@@ -2,8 +2,8 @@
 
 https://kvurd.com/blog/compiling-a-cpp-library-for-android-with-android-studio/
 
-export PATH=/tmp/my-android-toolchain/bin:$PATH
-export CC="arm-linux-androideabi-gcc"
-export CXX="arm-linux-androideabi-g++"
-export AR="arm-linux-androideabi-ar"
+./make-standalone-toolchain.sh --platform=android-24 --install-dir=/tmp/my-android-toolchain
+./make-standalone-toolchain.sh --platform=android-24 --install-dir=/tmp/my-android-toolchain-x86 --arch=x86
 
+export PATH=/tmp/my-android-toolchain/bin:$PATH
+export PATH=/tmp/my-android-toolchain-x86/bin:$PATH

@@ -2,9 +2,11 @@ LOCAL_PATH := $(call my-dir)
 
 # static library info
 LOCAL_MODULE := libgeograph3d
-LOCAL_SRC_FILES := ../lib/libgeograph3d.a
+LOCAL_CFLAGS := -frtti -fexceptions
+LOCAL_SRC_FILES := ../static/$(TARGET_ARCH_ABI)/geograph3d.a
 LOCAL_EXPORT_C_INCLUDES := ../include
 include $(PREBUILT_STATIC_LIBRARY)
+
 
 # wrapper info
 include $(CLEAR_VARS)
