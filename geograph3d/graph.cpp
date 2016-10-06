@@ -274,6 +274,23 @@ bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {
     return false;
 }
 
+Node* Graph::AddNodeAndEdges(std::string tag, double latitude, double longitude, int level) {
+    return this->AddNodeAndEdges(this->GetMaxNodeID()+1, tag, latitude, longitude, level);
+}
+
+Node* Graph::AddNodeAndEdges(unsigned int id, std::string tag, double latitude, double longitude, int level) {
+    Node* nereast = this->GetNearestNode(latitude, longitude, level);
+    if(nereast != NULL) {
+        Node* node = this->AddNode(id, tag, latitude, longitude, level);
+        if(node != NULL) {
+            this->AddEdge(node->GetID(), nereast->GetID());
+            this->AddEdge(nereast->GetID(), node->GetID());
+            return node;
+        }
+    }
+    return NULL;
+}
+
 //MARK: Clear
 void Graph::Clear() {
     for(std::map<unsigned int, std::map<unsigned int, Edge*>>::iterator itE = this->edges.begin(); itE != this->edges.end(); itE++) {

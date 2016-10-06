@@ -35,10 +35,14 @@ namespace GeoGraph3D {
         
         //MARK: Sets
         void  AddNode(Node* node);
-        Node* AddNode(unsigned int id, std::string tag, double latitude = 0.0, double longitude = 0.0, int level = 0.0);
-        Node* AddNode(unsigned int id, double latitude = 0.0, double longitude = 0.0, int level = 0.0);
+        Node* AddNode(unsigned int id, std::string tag, double latitude = 0.0, double longitude = 0.0, int level = 0);
+        Node* AddNode(unsigned int id, double latitude = 0.0, double longitude = 0.0, int level = 0);
         
         bool RemoveNode(unsigned int id);        
+        
+        //
+        Node* AddNodeAndEdges(std::string tag, double latitude = 0.0, double longitude = 0.0, int level = 0);
+        Node* AddNodeAndEdges(unsigned int id, std::string tag, double latitude = 0.0, double longitude = 0.0, int level = 0);
         
         /*
          AddEdge - добавляем ребро графа
