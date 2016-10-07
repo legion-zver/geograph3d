@@ -19,9 +19,9 @@ using namespace GeoGraph3D;
         }
         return -1.0;
     }
-    // double JNode->distanceTo(long nativePointer, double latitude, double longitude, int level, double levelSize);
+    // double JNode->distanceToII(long nativePointer, double latitude, double longitude, int level, double levelSize);
     JNIEXPORT jdouble JNICALL
-    Java_com_ppapp_geograph3d_JNode_distanceTo_II(JNIEnv *env, jobject thiz, jlong nativePointer, jdouble latitude, jdouble longitude, jint level, jdouble levelSize) {
+    Java_com_ppapp_geograph3d_JNode_distanceToII(JNIEnv *env, jobject thiz, jlong nativePointer, jdouble latitude, jdouble longitude, jint level, jdouble levelSize) {
         if(nativePointer != 0 ) {
             return ((Node*)nativePointer)->DistanceTo(latitude, longitude, level, levelSize);
         }
@@ -164,7 +164,198 @@ using namespace GeoGraph3D;
         }
         return -1.0;
     }
+
     // JGraph
+    // long JGraph->createGraph();
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_createGraph(JNIEnv *env, jobject thiz) {
+        return (long)(new Graph());
+    }
+    // void JGraph->destroyGraph(long nativePointer);
+    JNIEXPORT void JNICALL
+    Java_com_ppapp_geograph3d_JGraph_destroyGraph(JNIEnv *env, jobject thiz, jlong nativePointer) {
+        if(nativePointer != 0) {
+            delete ((Graph*)nativePointer);            
+        }
+    }
+    //long JGraph->getNearestNode(long nativePointer, long id, double minRadius);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getNearestNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id, jdouble minRadius) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetNearestNode(id, minRadius);
+        }
+        return 0;
+    }
+    //long JGraph->getNearestNodeII(long nativePointer, double latitude, double longitude, int level, double minRadius)
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getNearestNodeII(JNIEnv *env, jobject thiz, jlong nativePointer, jdouble latitude, jdouble longitude, jint level, jdouble minRadius) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetNearestNode(latitude, longitude, level, minRadius);
+        }
+        return 0;
+    }
+    // long JGraph->getNode(long nativePointer, long id);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetNode(id);
+        }
+        return 0;
+    }
+    // long JGraph->getNodeII(long nativePointer, String tag);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getNodeII(JNIEnv *env, jobject thiz, jlong nativePointer, jstring tag) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetNode(env->GetStringUTFChars(tag, 0));
+        }
+        return 0;
+    }
+    // long JGraph->getNodeIII(long nativePointer, double latitude, double longitude, int level);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getNodeIII(JNIEnv *env, jobject thiz, jlong nativePointer, jdouble latitude, jdouble longitude, jint level) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetNode(latitude, longitude, level);
+        }
+        return 0;
+    }
+    // long JGraph->getMaxNodeID(long nativePointer);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getMaxNodeID(JNIEnv *env, jobject thiz, jlong nativePointer) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetMaxNodeID();
+        }
+        return 0;
+    }
+    // long JGraph->getNodeByIndex(long nativePointer, long index);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getNodeByIndex(JNIEnv *env, jobject thiz, jlong nativePointer, jlong index) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetNodeByIndex(index);
+        }
+        return 0;
+    }
+    // long JGraph->getCountNodes(long nativePointer);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getCountNodes(JNIEnv *env, jobject thiz, jlong nativePointer) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetCountNodes();
+        }
+        return 0;
+    }
+    // ArrayList<long> JGraph->getNodes(long nativePointer)
+    JNIEXPORT jobject JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getNodes(JNIEnv *env, jobject thiz, jlong nativePointer) {
+        jclass ArrayListClass = env->FindClass("java/util/ArrayList"); 
+        jobject result = env->NewObject(ArrayListClass, env->GetMethodID(ArrayListClass, "<init>", "()V"));
+        jmethodID addMethod = env->GetMethodID(ArrayListClass, "add", "(Ljava/lang/Object;)Z");
+        if(nativePointer != 0) {
+            const std::map<unsigned int, Node*>* map = ((Graph*)nativePointer)->GetNodes();
+            if(map != 0) {
+                for(std::map<unsigned int, Node*>::const_iterator itN = map->begin(); itN != map->end(); map++ ) {
+                    if(itN->second != 0) {
+                        env->CallBooleanMethod(result, addMethod, (long)itN->second);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    // long JGraph->getEdge(long nativePointer, long sourceId, long targetId, boolean allDirections);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getEdge(JNIEnv *env, jobject thiz, jlong nativePointer, jlong sourceId, jlong targetId, jboolean allDirections) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GetEdge(sourceId, targetId, allDirections);
+        }
+        return 0;
+    }
+    // ArrayList<long> JGraph->getEdges(long nativePointer, long sourceId);
+    JNIEXPORT jobject JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getEdges(JNIEnv *env, jobject thiz, jlong nativePointer, jlong sourceId) {
+        jclass ArrayListClass = env->FindClass("java/util/ArrayList"); 
+        jobject result = env->NewObject(ArrayListClass, env->GetMethodID(ArrayListClass, "<init>", "()V"));
+        jmethodID addMethod = env->GetMethodID(ArrayListClass, "add", "(Ljava/lang/Object;)Z");
+        if(nativePointer != 0) {
+            MapEdges* map = ((Graph*)nativePointer)->GetEdges(sourceId);
+            if(map != 0) {
+                for(MapEdges::iterator itE = map->begin(); itE != map->end(); itE++) {
+                    if(itE->second != 0) {
+                        env->CallBooleanMethod(result, addMethod, (long)itE->second);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    // double JGraph->getWeight(long nativePointer, long sourceId, long targetId, long factorId);
+    JNIEXPORT jdouble JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getWeight(JNIEnv *env, jobject thiz, jlong nativePointer, jlong sourceId, jlong targetId, jlong factorId) {
+        if(nativePointer != 0) {
+            return ((Graph*)nativePointer)->GetWeight(sourceId, targetId, factorId);
+        }
+        return -1.0;
+    }
+    // long JGraph->getCountEdges(long nativePointer);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_getCountEdges(JNIEnv *env, jobject thiz, jlong nativePointer) {
+        if(nativePointer != 0) {
+            return ((Graph*)nativePointer)->GetCountEdges();
+        }
+        return 0;
+    }
+    // void JGraph->addNode(long nativePointer, long nodePointer);
+    JNIEXPORT void JNICALL
+    Java_com_ppapp_geograph3d_JGraph_addNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong nodePointer) {
+        if(nativePointer != 0 && nodePointer != 0) {
+            ((Graph*)nativePointer)->AddNode((Node*)nodePointer);
+        }
+    }
+    // long JGraph->addNodeII(long nativePointer, long id, String tag, double latitude, double longitude, int level);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_addNodeII(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id, jstring tag, jdouble latitude, jdouble longitude, jint level) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->AddNode(id, env->GetStringUTFChars(tag, 0), latitude, longitude, level);
+        }
+        return 0;
+    }
+    // boolean JGraph->removeNode(long nativePointer, long id);
+    JNIEXPORT jboolean JNICALL
+    Java_com_ppapp_geograph3d_JGraph_removeNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id) {
+        if(nativePointer != 0) {
+            return ((Graph*)nativePointer)->RemoveNode(id);
+        }
+        return false;
+    }
+    // long JGraph->addNodeAndEdges(long nativePointer, long id, String tag, double latitude, double longitude, int level);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_addNodeAndEdges(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id, jstring tag, jdouble latitude, jdouble longitude, jint level) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->AddNodeAndEdges(id, env->GetStringUTFChars(tag, 0), latitude, longitude, level);
+        }
+        return 0;
+    }
+    // long JGraph->addEdge(long nativePointer, long sourceId, long targetId);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_addEdge(JNIEnv *env, jobject thiz, jlong nativePointer, jlong sourceId, jlong targetId) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->AddEdge(sourceId, targetId);
+        }
+        return 0;
+    }
+    // boolean JGraph->removeEdgesContainNode(long nativePointer, long nodeId);
+    JNIEXPORT jboolean JNICALL
+    Java_com_ppapp_geograph3d_JGraph_removeEdgesContainNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong nodeId) {
+        if(nativePointer != 0) {
+            return ((Graph*)nativePointer)->RemoveEdgesContainNode(nodeId);
+        }
+        return false;
+    }
+    // void JGraph->clear(long nativePointer);
+    JNIEXPORT void JNICALL
+    Java_com_ppapp_geograph3d_JGraph_clear(JNIEnv *env, jobject thiz, jlong nativePointer) {
+        if(nativePointer != 0) {
+            ((Graph*)nativePointer)->Clear();
+        }
+    }
 
     // JRoads
     // long JRoads->createRoads();
@@ -201,10 +392,10 @@ using namespace GeoGraph3D;
             Roads *roads = (Roads*)nativePointer;
             std::vector<Node*> vNodes;
             //----
-            jclass clazzArrayList = (*env).FindClass("java/util/ArrayList");
+            jclass clazzArrayList = env->FindClass("java/util/ArrayList");
             jint size = env->CallIntMethod(nodes, env->GetMethodID(clazzArrayList, "size", "()I"));
             for(jint i=size-1; i>=0; i--) {
-                jlong nodePtr = env->CallLongMethod(nodes, (*env).GetMethodID(clazzArrayList, "get","(I)J"), i);
+                jlong nodePtr = env->CallLongMethod(nodes, env->GetMethodID(clazzArrayList, "get","(I)J"), i);
                 if(nodePtr != 0) {
                     vNodes.push_back((Node*)nodePtr);
                 }
@@ -222,4 +413,37 @@ using namespace GeoGraph3D;
         }
         return false;
     }
+
+    // JDijkstra
+    // long JDijkstra->createDijkstra(long graphPointer);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JDijkstra_createDijkstra(JNIEnv *env, jobject thiz, jlong graphPointer) {
+        return (long)(new DijkstraSearch((Graph*)graphPointer));
+    }
+    // void JDijkstra->destroyDijkstra(long nativePointer);
+    JNIEXPORT void JNICALL 
+    Java_com_ppapp_geograph3d_JDijkstra_destroyDijkstra(JNIEnv *env, jobject thiz, jlong nativePointer) {
+        if(nativePointer != 0) {
+            delete ((DijkstraSearch*)nativePointer);            
+        }
+    }
+    // ArrayList<long> findPath(long nativePointer, long fromId, long toId, long factorId, double levelSize);
+    JNIEXPORT jobject JNICALL
+    Java_com_ppapp_geograph3d_JDijkstra_findPath(JNIEnv *env, jobject thiz, jlong nativePointer, jlong fromId, jlong toId, jlong factorId, jdouble levelSize) {
+        jclass ArrayListClass = env->FindClass("java/util/ArrayList"); 
+        jobject result = env->NewObject(ArrayListClass, env->GetMethodID(ArrayListClass, "<init>", "()V"));
+        jmethodID addMethod = env->GetMethodID(ArrayListClass, "add", "(Ljava/lang/Object;)Z");
+        if(nativePointer != 0) {
+            ResultPath pathData = ((DijkstraSearch*)nativePointer)->FindPath(fromId, toId, factorId, levelSize);
+            if(!pathData.haveErrors) {
+                for(long i=0; i<pathData.nodes.size(); i++) {
+                    if(pathData.nodes[i] != 0) {
+                        env->CallBooleanMethod(result, addMethod, (long)pathData.nodes[i]);
+                    }
+                }
+            }     
+        }
+        return result;        
+    }
+
 //}

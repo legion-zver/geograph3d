@@ -8,7 +8,7 @@ public class JNode extends JNativePointer {
     }
     // Math:
     public double DistanceTo(double latitude, double longitude, int level, double levelSize) {
-        return distanceTo(nativePointer, latitude, longitude, level, levelSize);
+        return distanceToII(nativePointer, latitude, longitude, level, levelSize);
     }
     public double DistanceTo(Node node, double levelSize) {
         return distanceTo(nativePointer, node.nativePointer, levelSize);
@@ -42,7 +42,7 @@ public class JNode extends JNativePointer {
     // Нативные функции (только для внутреннего использования)
     private native long    createNode(long id, String tag, double latitude, double longitude, int level);        
     private native double  distanceTo(long nativePointer, long nodePointer, double levelSize);
-    private native double  distanceTo(long nativePointer, double latitude, double longitude, int level, double levelSize);
+    private native double  distanceToII(long nativePointer, double latitude, double longitude, int level, double levelSize);
     private native boolean compareLocation(long nativePointer, double latitude, double longitude);    
     private native void    setTag(long nativePointer, String tag);
     private native void    setLatitude(long nativePointer, double latitude);
