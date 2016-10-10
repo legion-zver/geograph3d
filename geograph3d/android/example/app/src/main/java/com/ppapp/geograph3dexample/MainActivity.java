@@ -8,7 +8,7 @@ import com.ppapp.geograph3d.*;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'native-lib' library on application startup.
+    // Used to load the 'geograph3d-wrapper' library on application startup.
     static {
         System.loadLibrary("geograph3d-wrapper");
     }
