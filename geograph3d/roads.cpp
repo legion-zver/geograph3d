@@ -74,7 +74,9 @@ bool Roads::FillGraph(Graph *graph) {
         for(std::map<unsigned int, IntArray>::iterator itCr = this->crossess.begin(); itCr != this->crossess.end();  itCr++) {
             unsigned long count = itCr->second.size();
             for(unsigned long i=0; i < count; i++) {
+                // Двусторонняя связь
                 graph->AddEdge(itCr->first, itCr->second[i]);
+                graph->AddEdge(itCr->second[i], itCr->first);
             }
         }
         return true;
@@ -182,6 +184,26 @@ void Roads::FindCrossess() {
                                             crossId++;
                                             p1 = newNode;
                                             //ir++;
+                                        }
+                                    } else {
+                                        // Если точек пересечения нет, то проверяем точки по координатам
+                                        // и формируем связи
+                                        if(p0->CompareLocation(r0->GetLatitude(), r0->GetLongitude())) {
+                                            IntArray crossList;
+                                            crossList.push_back(r0->GetID());
+                                            this->crossess[p0->GetID()] = crossList;
+                                        } else if(p0->CompareLocation(r1->GetLatitude(), r1->GetLongitude())) {
+                                            IntArray crossList;
+                                            crossList.push_back(r1->GetID());
+                                            this->crossess[p0->GetID()] = crossList;
+                                        } else if(p1->CompareLocation(r0->GetLatitude(), r0->GetLongitude())) {
+                                            IntArray crossList;
+                                            crossList.push_back(r0->GetID());
+                                            this->crossess[p1->GetID()] = crossList;
+                                        } else if(p1->CompareLocation(r1->GetLatitude(), r1->GetLongitude())) {
+                                            IntArray crossList;
+                                            crossList.push_back(r1->GetID());
+                                            this->crossess[p1->GetID()] = crossList;
                                         }
                                     }
                                 }

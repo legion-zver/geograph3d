@@ -42,7 +42,7 @@ namespace GeoGraph3D {
         double          GetLatitude();
         double          GetLongitude();
         int             GetLevel();
-        bool            CompareLocation(double _latitude, double _longitude);
+        bool            CompareLocation(double _latitude, double _longitude);        
         
         //MARK: Math
         
