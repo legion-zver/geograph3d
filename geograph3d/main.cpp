@@ -50,7 +50,7 @@ int main(int argc, const char * argv[]) {
     unsigned int myLocationId = graph.GetMaxNodeID()+1;
     
     // Берем наше положение и добавляем на него ноду
-    graph.AddNode(myLocationId, "MyGeoPosition", 55.77667446707311, 37.65513002872467, 2); // Первый этаж
+    graph.AddNode(myLocationId, "MyGeoPosition", 55.77667446707311, 37.65513002872467, 1); // Первый этаж
 
     // Проводим поиск ближайшей ноды для нашей гео позиции - для создания ребра
     Node* n = graph.GetNearestNode(myLocationId);

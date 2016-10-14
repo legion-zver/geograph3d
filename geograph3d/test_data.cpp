@@ -52,10 +52,13 @@ void AddTransitionsExample01(Graph* graph) {
         
         std::vector<TransitionInfo> forNextEdges;
         
-        unsigned int layerId = graph->GetMaxNodeID()+1;
 #ifdef DEBUG_TEST_TRANSITIONS
         printf("Transition layerId: %d\n", layerId);
 #endif
+        
+        unsigned int crossLayerId = graph->GetMaxNodeID()+1;
+        unsigned int layerId = crossLayerId+root.size()+1000;
+        
         for(int i=0; i<root.size(); i++) {
             auto transition = root[i];
             auto transitionId = transition["transitionId"].as_int();
@@ -65,8 +68,11 @@ void AddTransitionsExample01(Graph* graph) {
             if(transition.get_type() == jute::JOBJECT) {
                 double lat = location["lat"].as_double();
                 double lng = location["lng"].as_double();
-                // Поиск точек рядом на этаже
-                Node* nereast = graph->GetNearestNode(lat, lng, floor, 0.0);
+                
+                // Поиск точек рядом на этаже 
+                Node* nereast = graph->GenNewNearestNodeInEdges(crossLayerId+i, lat, lng, floor);
+                                //graph->GetNearestNode(lat, lng, floor);
+                
                 if(nereast != NULL) {
                     // Присоединяем переход к ближайшей ноде
                     Node *node = graph->AddNode((unsigned int)(layerId+transitionId), name, lat, lng, floor);

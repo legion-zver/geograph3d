@@ -13,7 +13,8 @@ using namespace GeoGraph3D;
 //#define DEBUG_CROSS
 //#define DEBUG_ROADS
 
-bool Roads::AddRoad(std::vector<Node*> nodes, Direction direction) {
+bool Roads::AddRoad(std::vector<Node*> nodes, Direction direction)
+{
     if(nodes.size() > 1) {
         Road newRoad;
         newRoad.nodes = nodes;
@@ -24,7 +25,8 @@ bool Roads::AddRoad(std::vector<Node*> nodes, Direction direction) {
     return false;
 }
 
-bool Roads::FillGraph(Graph *graph) {
+bool Roads::FillGraph(Graph *graph)
+{
     if(graph != NULL) {
         graph->Clear();
         
@@ -84,7 +86,8 @@ bool Roads::FillGraph(Graph *graph) {
     return false;
 }
 
-void Roads::Clear(bool removeFromMemory) {
+void Roads::Clear(bool removeFromMemory)
+{
     if(removeFromMemory) {
         this->ClearCrossess();
     } else {
@@ -93,7 +96,8 @@ void Roads::Clear(bool removeFromMemory) {
     this->roads.clear();
 }
 
-void Roads::ClearCrossess() {
+void Roads::ClearCrossess()
+{
     for(std::map<unsigned int, IntArray>::iterator itCr = this->crossess.begin(); itCr != this->crossess.end();  itCr++) {
         Node* forRemove = NULL;
         for(std::vector<Road>::iterator itR = this->roads.begin(); itR != this->roads.end(); itR++) {
@@ -117,7 +121,8 @@ void Roads::ClearCrossess() {
     this->crossess.clear();
 }
 
-unsigned int Roads::GetMaxNodeID() {
+unsigned int Roads::GetMaxNodeID()
+{
     unsigned int maxId = 0;
     unsigned long countRoads = this->roads.size();
     for(unsigned long i = 0; i < countRoads; i++) {
@@ -134,7 +139,8 @@ unsigned int Roads::GetMaxNodeID() {
     return maxId;
 }
 
-void Roads::FindCrossess() {
+void Roads::FindCrossess()
+{
     // Откат пересечений
     this->ClearCrossess();
     
@@ -185,22 +191,22 @@ void Roads::FindCrossess() {
                                             p1 = newNode;
                                             //ir++;
                                         }
-                                    } else {
+                                    } else {                                        
                                         // Если точек пересечения нет, то проверяем точки по координатам
                                         // и формируем связи
-                                        if(p0->CompareLocation(r0->GetLatitude(), r0->GetLongitude())) {
-                                            IntArray crossList;
-                                            crossList.push_back(r0->GetID());
-                                            this->crossess[p0->GetID()] = crossList;
-                                        } else if(p0->CompareLocation(r1->GetLatitude(), r1->GetLongitude())) {
+                                        if(p0->CompareLocation(r1->GetLatitude(), r1->GetLongitude())) {
                                             IntArray crossList;
                                             crossList.push_back(r1->GetID());
+                                            this->crossess[p0->GetID()] = crossList;
+                                        } else if(p0->CompareLocation(r0->GetLatitude(), r0->GetLongitude())) {
+                                            IntArray crossList;
+                                            crossList.push_back(r0->GetID());
                                             this->crossess[p0->GetID()] = crossList;
                                         } else if(p1->CompareLocation(r0->GetLatitude(), r0->GetLongitude())) {
                                             IntArray crossList;
                                             crossList.push_back(r0->GetID());
                                             this->crossess[p1->GetID()] = crossList;
-                                        } else if(p1->CompareLocation(r1->GetLatitude(), r1->GetLongitude())) {
+                                        }else if(p1->CompareLocation(r1->GetLatitude(), r1->GetLongitude())) {
                                             IntArray crossList;
                                             crossList.push_back(r1->GetID());
                                             this->crossess[p1->GetID()] = crossList;
