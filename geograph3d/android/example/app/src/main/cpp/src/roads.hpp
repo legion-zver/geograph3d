@@ -10,7 +10,6 @@
 #define roads_hpp
 
 #include "graph.hpp"
-#include <vector>
 
 namespace GeoGraph3D {
     
@@ -37,7 +36,7 @@ namespace GeoGraph3D {
         bool FillGraph(Graph *graph);
         // Clear - очищаем списки дорог и пересечений
         void Clear(bool removeFromMemory);
-    private:
+    private:        
         void FindCrossess();
         void ClearCrossess();
         unsigned int GetMaxNodeID();

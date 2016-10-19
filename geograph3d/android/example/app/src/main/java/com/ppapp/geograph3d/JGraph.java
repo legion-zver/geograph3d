@@ -20,6 +20,11 @@ public class JGraph extends JNativePointer {
     public JNode GetNearestNode(double latitude, double longitude, int level, double minRadius) {
         return new JNode(getNearestNodeII(nativePointer, latitude, longitude, level, minRadius));
     }
+    // Генерируем новую ноду на ближайшем ребре
+    public JNode GenNewNearestNodeInEdges(long id, double latitude, double longitude, int level) {
+        return new JNode(genNewNearestNodeInEdges(nativePointer, id, latitude, longitude, level));
+    }
+
     // Получение нод из графа
     public JNode GetNode(long id) {
         return new JNode(getNode(nativePointer, id));
@@ -84,8 +89,8 @@ public class JGraph extends JNativePointer {
         return new JNode(addNodeII(nativePointer, id, tag, latitude, longitude, level));
     }
     // Удаление ноды по ID из графа
-    public boolean RemoveNode(long id) {
-        return removeNode(nativePointer, id);
+    public boolean RemoveNode(long id, boolean restoreBrokeEdges) {
+        return removeNode(nativePointer, id, restoreBrokeEdges);
     }
     // Добавляем ноду и создаем две связи для нее с графом на этаже
     public JNode AddNodeAndEdges(long id, String tag, double latitude, double longitude, int level) {
@@ -103,11 +108,13 @@ public class JGraph extends JNativePointer {
     public void Clear() {
         clear(nativePointer);
     }
+
     // Нативные функции
     private native long     createGraph();
     private native void     destroyGraph(long nativePointer);
     private native long     getNearestNode(long nativePointer, long id, double minRadius);
     private native long     getNearestNodeII(long nativePointer, double latitude, double longitude, int level, double minRadius);
+    private native long     genNewNearestNodeInEdges(long nativePointer, long id, double latitude, double longitude, int level);
     private native long     getNode(long nativePointer, long id);
     private native long     getNodeII(long nativePointer, String tag);
     private native long     getNodeIII(long nativePointer, double latitude, double longitude, int level);    
@@ -121,7 +128,7 @@ public class JGraph extends JNativePointer {
     private native long     getCountEdges(long nativePointer);
     private native void     addNode(long nativePointer, long nodePointer);
     private native long     addNodeII(long nativePointer, long id, String tag, double latitude, double longitude, int level);
-    private native boolean  removeNode(long nativePointer, long id);
+    private native boolean  removeNode(long nativePointer, long id, boolean restoreBrokeEdges);
     private native long     addNodeAndEdges(long nativePointer, long id, String tag, double latitude, double longitude, int level);
     private native long     addEdge(long nativePointer, long sourceId, long targetId);
     private native boolean  removeEdgesContainNode(long nativePointer, long nodeId);

@@ -20,6 +20,8 @@ double geoDistance(double latitude1, double longitude1, double latitude2, double
 
 bool checkPointInLineGeo(double lat0, double lng0, double lat1, double lng1, double lat2, double lng2);
 
+double distance2D(double x0, double y0, double x1, double y1);
+
 namespace GeoGraph3D {
     
     // Структура точки
@@ -72,6 +74,7 @@ namespace GeoGraph3D {
         // FindCrossTwoLines - Поиск точки пересечения двух линий
         static Point FindCrossTwoLines2D(Node* p0, Node* p1, Node* r0, Node* r1, bool duo = true);
         static Point FindCrossTwoRays2D(Ray* ray, Node* r0, Node* r1, bool duo = true);
+        static Point NearestPointOnLine2D(double latitude, double longitude, Node* p0, Node* p1, bool clampToSegment = true);
         
     private:
         unsigned int    id;         // Идентификатор

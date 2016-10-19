@@ -30,6 +30,10 @@ namespace GeoGraph3D {
         unsigned long GetCountFactors();
         double  GetWeight(int factorID = -1, double levelSize = 0.03);
         
+        unsigned int GetSecondID(unsigned int firstId);
+        
+        bool HasNodeID(unsigned int nodeId);
+        
     private:
         Node* source; // Нода источник
         Node* target; // Нода цель

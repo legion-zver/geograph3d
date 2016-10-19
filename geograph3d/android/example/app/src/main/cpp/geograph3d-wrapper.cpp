@@ -216,11 +216,19 @@ extern "C" {
         }
         return 0;
     }
+    // long JGraph->genNewNearestNodeInEdges(long nativePointer, long id, double latitude, double longitude, int level);
+    JNIEXPORT jlong JNICALL
+    Java_com_ppapp_geograph3d_JGraph_genNewNearestNodeInEdges(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id, jdouble latitude, jdouble longitude, jint level) {
+        if(nativePointer != 0) {
+            return (long)((Graph*)nativePointer)->GenNewNearestNodeInEdges((unsigned int)id, latitude, longitude, level);
+        }
+        return 0;
+    }
     // long JGraph->getNode(long nativePointer, long id);
     JNIEXPORT jlong JNICALL
     Java_com_ppapp_geograph3d_JGraph_getNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id) {
         if(nativePointer != 0) {
-            return (long)((Graph*)nativePointer)->GetNode(id);
+            return (long)((Graph*)nativePointer)->GetNode((unsigned int)id);
         }
         return 0;
     }
@@ -383,11 +391,11 @@ extern "C" {
         }
         return 0;
     }
-    // boolean JGraph->removeNode(long nativePointer, long id);
+    // boolean JGraph->removeNode(long nativePointer, long id, boolean restoreBrokeEdges);
     JNIEXPORT jboolean JNICALL
-    Java_com_ppapp_geograph3d_JGraph_removeNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id) {
+    Java_com_ppapp_geograph3d_JGraph_removeNode(JNIEnv *env, jobject thiz, jlong nativePointer, jlong id, jboolean restoreBrokeEdges) {
         if(nativePointer != 0) {
-            return (jboolean)((Graph*)nativePointer)->RemoveNode((unsigned int)id);
+            return (jboolean)((Graph*)nativePointer)->RemoveNode((unsigned int)id, (bool)restoreBrokeEdges);
         }
         return JNI_FALSE;
     }

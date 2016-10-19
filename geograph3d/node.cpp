@@ -31,6 +31,10 @@ double geoDistance(double latitude1, double longitude1, double latitude2, double
     return EARTH_RADIUS_KM*(2 * asin(sqrt(pow(sin(d_lat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(d_lng / 2), 2))));
 }
 
+double distance2D(double x0, double y0, double x1, double y1) {
+    return sqrt(pow(x1-x0, 2)+pow(y1-y0, 2));
+}
+
 bool checkPointInLineGeo(double lat0, double lng0, double lat1, double lng1, double lat2, double lng2) {
     bool result;
     if(lat1 > lat2)
@@ -172,4 +176,30 @@ bool Node::CheckPointInLine2D(double latitude, double longitude, Node* p0, Node*
         return checkPointInLineGeo(latitude, longitude, p0->GetLatitude(), p0->GetLongitude(), p1->GetLatitude(), p1->GetLongitude());
     }
     return false;
+}
+
+Point Node::NearestPointOnLine2D(double latitude, double longitude, Node* p0, Node* p1, bool clampToSegment) {
+    Point result; result.empty = true;
+    if(p0 != NULL && p1 != NULL) {
+        if(p0->GetLevel() == p1->GetLevel()) {
+            double apx = latitude - p0->GetLatitude();
+            double apy = longitude - p0->GetLongitude();
+            double abx = p1->GetLatitude() - p0->GetLatitude();
+            double aby = p1->GetLongitude() - p0->GetLongitude();
+            double ab2 = abx*abx + aby*aby;
+            double ap_ab = apx*abx + apy*aby;
+            double t = ap_ab / ab2;
+            if (clampToSegment) {
+                if (t < 0) {
+                    t = 0;
+                } else if (t > 1) {
+                    t = 1;
+                }
+            }
+            result.latitude = p0->GetLatitude() + abx*t;
+            result.longitude = p0->GetLongitude() + aby*t;
+            result.empty = false;
+        }
+    }
+    return result;
 }

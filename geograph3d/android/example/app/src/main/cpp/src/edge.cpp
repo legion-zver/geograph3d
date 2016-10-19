@@ -56,3 +56,33 @@ double Edge::GetWeight(int factorID, double levelSize) {
     }
     return -1.0;
 }
+
+bool Edge::HasNodeID(unsigned int nodeId) {
+    if(source != NULL) {
+        if(source->GetID() == nodeId) {
+            return true;
+        }
+    }
+    if(target != NULL) {
+        if(target->GetID() == nodeId) {
+            return true;
+        }
+    }
+    return false;
+}
+
+unsigned int Edge::GetSecondID(unsigned int firstId) {
+    if(HasNodeID(firstId)) {
+        if(source != NULL) {
+            if(source->GetID() != firstId) {
+                return source->GetID();
+            }
+        }
+        if(target != NULL) {
+            if(target->GetID() != firstId) {
+                return target->GetID();
+            }
+        }
+    }
+    return 0;
+}

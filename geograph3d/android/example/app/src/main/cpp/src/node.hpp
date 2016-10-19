@@ -11,12 +11,30 @@
 
 #include <stdio.h>
 #include <string>
+
+// Перевод Градусы -> Радианы
+double degToRad(double deg);
+
+// Дистанция между двумя точками в GEO
+double geoDistance(double latitude1, double longitude1, double latitude2, double longitude2);
+
+bool checkPointInLineGeo(double lat0, double lng0, double lat1, double lng1, double lat2, double lng2);
+
+double distance2D(double x0, double y0, double x1, double y1);
+
 namespace GeoGraph3D {
+    
     // Структура точки
     struct Point {
         double latitude;
         double longitude;
         bool   empty;
+    };
+    
+    // Луч
+    struct Ray {
+        Point p0;
+        Point p1;
     };
     
     // Нода графа
@@ -41,8 +59,9 @@ namespace GeoGraph3D {
         std::string     GetTag();
         double          GetLatitude();
         double          GetLongitude();
+        //Point           GetPoint();
         int             GetLevel();
-        bool            CompareLocation(double _latitude, double _longitude);
+        bool            CompareLocation(double _latitude, double _longitude);        
         
         //MARK: Math
         
@@ -54,6 +73,8 @@ namespace GeoGraph3D {
         
         // FindCrossTwoLines - Поиск точки пересечения двух линий
         static Point FindCrossTwoLines2D(Node* p0, Node* p1, Node* r0, Node* r1, bool duo = true);
+        static Point FindCrossTwoRays2D(Ray* ray, Node* r0, Node* r1, bool duo = true);
+        static Point NearestPointOnLine2D(double latitude, double longitude, Node* p0, Node* p1, bool clampToSegment = true);
         
     private:
         unsigned int    id;         // Идентификатор

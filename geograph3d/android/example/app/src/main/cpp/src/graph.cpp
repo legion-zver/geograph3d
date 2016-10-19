@@ -7,6 +7,7 @@
 //
 
 #include "graph.hpp"
+#include <math.h>
 
 using namespace GeoGraph3D;
 
@@ -116,12 +117,80 @@ Node* Graph::GetNearestNode(unsigned int id, double minRadius) {
     return node;
 }
 
+
+Node* Graph::GenNewNearestNodeInEdges(unsigned int id, double latitude, double longitude, int level) {    
+    Node* node = NULL;
+    Edge* minEdge = NULL;
+    double minDistance = DBL_MAX;
+    Point crossPoint;
+    
+    // Поиск ближайшей точки на ребрах методом проекции
+    for(std::map<unsigned int, MapEdges>::iterator it = this->edges.begin(); it != this->edges.end(); it++) {
+        for(MapEdges::iterator itE = it->second.begin(); itE != it->second.end(); itE++) {
+            if(itE->second != NULL) {
+                Node* src = itE->second->GetSource();
+                Node* target = itE->second->GetTarget();
+                if(src != NULL && target != NULL) {
+                    if(src->GetLevel() == level && target->GetLevel() == level) {
+                        Point cross = Node::NearestPointOnLine2D(latitude, longitude, src, target);
+                        if(!cross.empty) {
+                            double distance = distance2D(latitude, longitude, cross.latitude, cross.longitude);
+                            if(distance < minDistance) {
+                                minDistance = distance;
+                                crossPoint = cross;
+                                minEdge = itE->second;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }    
+    
+    // Грань найдена
+    if(minEdge != NULL) {
+        // Теперь нужно встроить новую точку в эту грань и в обратную - для двойного пути
+        Node* source = minEdge->GetSource();
+        Node* target = minEdge->GetTarget();
+        if(source != NULL && target != NULL) {
+            minEdge = NULL; // Чтобы не налажать
+            if(id == 0) {
+                id = this->GetMaxNodeID()+1;
+            }            
+            node = this->AddNode(id, crossPoint.latitude, crossPoint.longitude, level);
+            // Удаляем грани
+            this->RemoveEdge(source->GetID(), target->GetID());
+            this->RemoveEdge(target->GetID(), source->GetID());
+            // Создаем новые грани
+            this->AddEdge(source->GetID(), node->GetID());
+            this->AddEdge(node->GetID(), source->GetID());
+            this->AddEdge(node->GetID(), target->GetID());
+            this->AddEdge(target->GetID(), node->GetID());
+        }
+    }
+    return node;
+}
+
 const std::map<unsigned int, Node*>* Graph::GetNodes() {
     return &this->nodes;
 }
 
 unsigned long Graph::GetCountNodes() {
     return this->nodes.size();
+}
+
+std::vector<Edge*> Graph::FindEdgesForNode(unsigned int nodeId) {
+    std::vector<Edge*> result;
+    for(std::map<unsigned int, MapEdges>::iterator it = this->edges.begin(); it != this->edges.end(); it++) {
+        for(MapEdges::iterator itE = it->second.begin(); itE != it->second.end(); itE++) {
+            if(itE->second != NULL) {
+                if(itE->second->HasNodeID(nodeId)) {
+                    result.push_back(itE->second);
+                }
+            }
+        }
+    }
+    return result;
 }
 
 Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool allDirections) {
@@ -151,10 +220,7 @@ Edge* Graph::GetEdge(unsigned int sourceId, unsigned int targetId, bool allDirec
 MapEdges* Graph::GetEdges(unsigned int sourceId) {
     std::map<unsigned int, MapEdges>::iterator v = this->edges.find(sourceId);
     if(v == this->edges.end()) {
-        v = this->edges.find(sourceId);
-        if(v == this->edges.end()) {
-            return NULL;
-        }
+        return NULL;
     }
     return &v->second;
 }
@@ -202,7 +268,7 @@ Node* Graph::AddNode(unsigned int id, double latitude, double longitude, int lev
     return NULL;
 }
 
-bool Graph::RemoveNode(unsigned int id) {
+bool Graph::RemoveNode(unsigned int id, bool restoreBrokeEdges) {
     std::map<unsigned int, Node*>::iterator itN = this->nodes.find(id);
     if(itN == this->nodes.end()) {
         return false;
@@ -210,7 +276,50 @@ bool Graph::RemoveNode(unsigned int id) {
     if(itN->second == NULL) {
         return false;
     }
-    this->RemoveEdgesContainNode(id);
+    bool removeEdges = true;
+    if(restoreBrokeEdges) {
+        std::vector<Edge*> edges = FindEdgesForNode(id);
+        size_t countEdges = edges.size();
+        if(countEdges == 2 || countEdges == 4) {
+            // Поиск двух других нод
+            unsigned int nodeId1 = 0;
+            unsigned int nodeId2 = 0;
+            unsigned int tmpId = 0;
+            for(int i=0; i < countEdges; i++) {
+                if(edges[i] != NULL) {
+                    if(nodeId1 == 0) {
+                        tmpId = edges[i]->GetSecondID(id);
+                        if(tmpId > 0) {
+                            nodeId1 = tmpId;
+                        }
+                    } else if(nodeId2 == 0) {
+                        tmpId = edges[i]->GetSecondID(id);
+                        if(tmpId > 0 && tmpId != nodeId1) {
+                            nodeId2 = tmpId;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(nodeId1 != 0 && nodeId2 != 0) {
+                
+                // Удаляем наши ребра
+                RemoveEdge(id, nodeId1);
+                RemoveEdge(nodeId1, id);
+                RemoveEdge(id, nodeId2);
+                RemoveEdge(nodeId2, id);
+                
+                // Восстанавливаем связи
+                AddEdge(nodeId1, nodeId2);
+                AddEdge(nodeId2, nodeId1);
+                
+                removeEdges = false;
+            }
+        }
+    }
+    if(removeEdges)
+        this->RemoveEdgesContainNode(id);
+    
     this->nodes.erase(itN);
     Node *node = itN->second;
     delete node;
@@ -235,6 +344,25 @@ Edge* Graph::AddEdge(unsigned int sourceId, unsigned int targetId) {
         return edge;
     }
     return NULL;
+}
+
+bool Graph::RemoveEdge(unsigned int sourceId, unsigned int targetId) {
+    MapEdges::iterator it = this->edges[sourceId].find(targetId);
+    if(it != this->edges[sourceId].end()) {
+        Edge* edge = edges[sourceId][targetId];
+        this->edges[sourceId].erase(it);
+        if(this->edges[sourceId].size() < 1) {
+            std::map<unsigned int, MapEdges>::iterator itM = this->edges.find(sourceId);
+            if(itM != this->edges.end()) {
+                this->edges.erase(itM);
+            }
+        }
+        if(edge != NULL) {
+            delete edge;
+        }
+        return true;
+    }
+    return false;
 }
 
 bool Graph::RemoveEdgesContainNode(unsigned int nodeId) {

@@ -93,7 +93,7 @@ void jValue::set_type(jType tp) {
     type = tp;
 }
 void jValue::add_property(string key, jValue v) {
-    mpindex[key] = properties.size();
+    mpindex[key] = (int)properties.size();
     properties.push_back(make_pair(key, v));
 }
 void jValue::add_element(jValue v) {
@@ -128,10 +128,10 @@ string jValue::as_string() {
 }
 int jValue::size() {
     if (type == JARRAY) {
-        return arr.size();
+        return (int)arr.size();
     }
     if (type == JOBJECT) {
-        return properties.size();;
+        return (int)properties.size();;
     }
     return 0;
 }
@@ -170,7 +170,7 @@ int parser::next_whitespace(const string& source, int i) {
         if (is_whitespace(source[i])) return i;
         i++;
     }
-    return source.length();
+    return (int)source.length();
 }
 int parser::skip_whitespaces(const string& source, int i) {
     while (i < source.length()) {
@@ -189,7 +189,7 @@ vector<parser::token> parser::tokenize(string source) {
         string str = source.substr(index, next-index);
         
         int k=0;
-        int t=-1;
+        //int t=-1;
         while (k < str.length()) {
             if (str[k] == '"') {
                 int tmp_k = k+1;
@@ -259,7 +259,7 @@ vector<parser::token> parser::tokenize(string source) {
                 continue;
             }
             tokens.push_back(token(str.substr(k), UNKNOWN));
-            k = str.length();
+            k = (int)str.length();
         }
         
         index = skip_whitespaces(source, next);

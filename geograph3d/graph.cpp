@@ -118,47 +118,35 @@ Node* Graph::GetNearestNode(unsigned int id, double minRadius) {
 }
 
 
-Node* Graph::GenNewNearestNodeInEdges(unsigned int id, double latitude, double longitude, int level) {
+Node* Graph::GenNewNearestNodeInEdges(unsigned int id, double latitude, double longitude, int level) {    
     Node* node = NULL;
-    // Для начала создаем N число лучей проходящих через данную точку
-    double a = BEGIN_RAYS_ANGLE;
-    
     Edge* minEdge = NULL;
     double minDistance = DBL_MAX;
     Point crossPoint;
     
-    for(int i=0; i < GEN_RAYS_NUMBER; i++) {
-        Ray ray;
-        ray.p0.latitude = latitude + ((latitude+0.1) - latitude) * cos(a) - ((longitude+0.1) - longitude) * sin(a);
-        ray.p0.longitude = longitude + ((longitude+0.1) - longitude) * cos(a) + ((latitude+0.1) - latitude) * sin(a);
-        ray.p1.latitude = latitude + ((latitude-0.1) - latitude) * cos(a) - ((longitude-0.1) - longitude) * sin(a);
-        ray.p1.longitude = longitude + ((longitude-0.1) - longitude) * cos(a) + ((latitude-0.1) - latitude) * sin(a);
-        
-        // Луч построен, пора искать самые ближайшее пересечение с ребрами
-        // Проходимся по всем граням
-        for(std::map<unsigned int, MapEdges>::iterator it = this->edges.begin(); it != this->edges.end(); it++) {
-            for(MapEdges::iterator itE = it->second.begin(); itE != it->second.end(); itE++) {
-                if(itE->second != NULL) {
-                    Node* src = itE->second->GetSource();
-                    Node* target = itE->second->GetTarget();
-                    if(src != NULL && target != NULL) {
-                        if(src->GetLevel() == level && target->GetLevel() == level) {
-                            Point cross = Node::FindCrossTwoRays2D(&ray, src, target);
-                            if(!cross.empty) {
-                                double distance = geoDistance(latitude, longitude, cross.latitude, cross.longitude);
-                                if(distance < minDistance) {
-                                    minDistance = distance;
-                                    crossPoint = cross;
-                                    minEdge = itE->second;
-                                }
+    // Поиск ближайшей точки на ребрах методом проекции
+    for(std::map<unsigned int, MapEdges>::iterator it = this->edges.begin(); it != this->edges.end(); it++) {
+        for(MapEdges::iterator itE = it->second.begin(); itE != it->second.end(); itE++) {
+            if(itE->second != NULL) {
+                Node* src = itE->second->GetSource();
+                Node* target = itE->second->GetTarget();
+                if(src != NULL && target != NULL) {
+                    if(src->GetLevel() == level && target->GetLevel() == level) {
+                        Point cross = Node::NearestPointOnLine2D(latitude, longitude, src, target);
+                        if(!cross.empty) {
+                            double distance = distance2D(latitude, longitude, cross.latitude, cross.longitude);
+                            if(distance < minDistance) {
+                                minDistance = distance;
+                                crossPoint = cross;
+                                minEdge = itE->second;
                             }
                         }
                     }
                 }
             }
         }
-        a += (180.0 / (GEN_RAYS_NUMBER+1));
-    }
+    }    
+    
     // Грань найдена
     if(minEdge != NULL) {
         // Теперь нужно встроить новую точку в эту грань и в обратную - для двойного пути

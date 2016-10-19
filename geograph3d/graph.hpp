@@ -18,11 +18,6 @@ namespace GeoGraph3D {
     #define DBL_MAX 1.79769e+308
 #endif
     
-    // Число борсаемых лучей при поиске ближайшей точки
-    #define GEN_RAYS_NUMBER 4
-    // Начальный угол броска луча
-    #define BEGIN_RAYS_ANGLE 0.0
-    
     // Для более правильной сборки под Android
     typedef std::map<unsigned int, Edge*> MapEdges;
     
